@@ -9,17 +9,24 @@ class Player {
         this.discard = [];
         this.treasure = 0;
         this.actions = 1;
+        this.buys = 1;
     }
     draw(n) {
         while (n > 0) {
-            if (!this.deck) {
+            if (!this.deck && !this.discard) {
+                console.log("no cards left!")
+                break;
+            } else if (!this.deck) {
                 console.log('shuffling your deck, hang on.', this.discard.length, 'cards in discard pile')
                 this.deck = shuffle(discard.splice())
             }
+
             console.log('drawing,', n, 'left')
             this.hand.push(this.deck.pop()) 
             n--
         }
+        renderHand(this)
+        return this.hand
     }
     discardRandom(n) {
         if (this.hand) {
@@ -29,21 +36,25 @@ class Player {
                 n--
             }
         }
+        renderHand(this)
+        return this.hand
     }
-    cardsInHand() {
-        let cards = [];
-        this.hand.forEach(card => {
-            cards.push(card.name)
-        })
-        return cards
+    discardSpecific(index) {
+        if(this.hand && this.hand[index]) {
+            discard.push(this.hand.splice(index, 1))
+        }
+        renderHand(this)
+        return this.hand
     }
+
+
 }
 
 class Card {
     constructor(name, cost, imageUrl, type) {
         this.name = name;
         this.cost = cost;
-        this.image = imageUrl;
+        this.imageUrl = imageUrl;
         this.type = type
     }
 }
@@ -68,4 +79,18 @@ function shuffle(cardsArr) {
         shuffled.push(cardsArr.splice(Math.floor(Math.random() * cardsArr.length), 1)[0]) // remember to de-reference splice
     }
     return shuffled
+}
+
+function renderHand(player) {
+    let htmlHand = document.querySelector('.player-item__hand');
+    while (htmlHand.firstChild) {
+        htmlHand.remove(htmlHand.firstChild);
+    }
+    player.hand.forEach((card, index) => {
+        let cardImg = document.createElement('img');
+        cardImg.src = card.imageUrl
+        cardImg.className = `hand-card hand-card--${index}`
+        htmlHand.appendChild(cardImg)
+    })
+
 }
