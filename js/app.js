@@ -1,10 +1,4 @@
-var p;
-var s;
-
-
-
-
-
+// class for cards
 class Card {
     constructor(name, cost, buyable, imageUrl, type, treasureVal, ) {
         this.name = name;
@@ -16,7 +10,7 @@ class Card {
 
     }
 }
-
+// makes 0 to n cards, takes n and an array of arguments for the card constructor
 function makeCards(n, card) {
     let output = [];
     for (n; n > 0; n--) {
@@ -24,6 +18,45 @@ function makeCards(n, card) {
     }
     return output
 }
+// makes a starter deck of 10 cards
+function makeDeck() {
+    // makes a starter deck
+    let deck = [];
+    deck.push(...makeCards(7, cardsArr.copper))
+    deck.push(...makeCards(3, cardsArr.estate))
+    return deck
+}
+// shuffles an array into a new array. Randomness limited by Math.random(). 
+// TODO: implement shuffling in place with Fisher-Yates or equivalent.
+// TODO: implement using better RNG
+function shuffle(cardsArr) {
+    let shuffled = [];
+    while (cardsArr.length > 0) {
+        shuffled.push(cardsArr.splice(Math.floor(Math.random() * cardsArr.length), 1)[0]) // remember to de-reference splice
+    }
+    return shuffled
+}
+
+class Player {
+    constructor(playerIndex) {
+        this.playerIndex
+        this.deck = shuffle(makeDeck());
+        this.hand = [];
+        this.played = []
+        this.discard = [];
+        this.treasure = 0;
+        this.actions = 1;
+        this.buys = 1;
+    }
+}
+
+const NUM_PLAYERS = 2 //parseInt(prompt("How many players?"));
+const PLAYERS = []
+for (let i = NUM_PLAYERS; i > 0; i++) {
+    PLAYERS.push(new Player(i))
+}
+
+
 
 var cardsArr = {
     copper: ["Copper", 0, true, "img/base/copper.jpg", "Treasure", 1],
@@ -42,80 +75,65 @@ var cardsArr = {
     witch: ["Witch", 5, true, "img/original/witch.jpg", "Action-Attack", 0],
 }
 
-class Player {
-    constructor() {
-        this.deck = shuffle(makeDeck());
-        this.hand = [];
-        this.played = []
-        this.discard = [];
-        this.treasure = 0;
-        this.actions = 1;
-        this.buys = 1;
-    }
-    gain(card, supply) {
-        console.log('gain', card)
-        console.log(supply.basic[card])
-        if (supply.basic[card]) {
-            this.discard.push(supply.basic[card].pop())
-            this.treasure -= supply.basic[card].cost
-        } else if (supply.kingdom[card]) {
-            this.discard.push(supply.kingdom[card].pop())
-            this.treasure -= supply.kingdom[card].cost
-        }
-        renderStacks(supply)
-    }
-    draw(n) {
-        while (n > 0) {
-            if (!this.deck && !this.discard) {
-                console.log("no cards left!")
-                break;
-            } else if (!this.deck) {
-                console.log('shuffling your deck, hang on.', this.discard.length, 'cards in discard pile')
-                this.deck = shuffle(discard.splice())
-            }
 
-            console.log('drawing,', n, 'left')
-            this.hand.push(this.deck.pop()) 
-            n--
-        }
-        renderHand(this)
-        renderDeck(this)
-        return this.hand
-    }
-    discardRandom(n) {
-        if (this.hand) {
-            while (n > 0) {
-                console.log('discarding,', n, 'left')
-                this.discard.push(this.hand.splice(Math.floor(Math.random() * this.hand.length), 1)[0]) // discard random index of hand, remember to de-reference splice
-                n--
-            }
-        }
-        renderHand(this)
-        return this.hand
-    }
-    discardSpecific(index) {
-        if(this.hand && this.hand[index]) {
-            discard.push(this.hand.splice(index, 1))
-        }
-        renderHand(this)
-        return this.hand
-    }
+//     gain(card, supply) {
+//         console.log('gain', card)
+//         console.log(supply.basic[card])
+//         if (supply.basic[card]) {
+//             this.discard.push(supply.basic[card].pop())
+//             this.treasure -= supply.basic[card].cost
+//         } else if (supply.kingdom[card]) {
+//             this.discard.push(supply.kingdom[card].pop())
+//             this.treasure -= supply.kingdom[card].cost
+//         }
+//         renderStacks(supply)
+//     }
+//     draw(n) {
+//         while (n > 0) {
+//             if (!this.deck && !this.discard) {
+//                 console.log("no cards left!")
+//                 break;
+//             } else if (!this.deck) {
+//                 console.log('shuffling your deck, hang on.', this.discard.length, 'cards in discard pile')
+//                 this.deck = shuffle(discard.splice())
+//             }
 
-    trashRandom() {
+//             console.log('drawing,', n, 'left')
+//             this.hand.push(this.deck.pop()) 
+//             n--
+//         }
+//         renderHand(this)
+//         renderDeck(this)
+//         return this.hand
+//     }
+//     discardRandom(n) {
+//         if (this.hand) {
+//             while (n > 0) {
+//                 console.log('discarding,', n, 'left')
+//                 this.discard.push(this.hand.splice(Math.floor(Math.random() * this.hand.length), 1)[0]) // discard random index of hand, remember to de-reference splice
+//                 n--
+//             }
+//         }
+//         renderHand(this)
+//         return this.hand
+//     }
+//     discardSpecific(index) {
+//         if(this.hand && this.hand[index]) {
+//             discard.push(this.hand.splice(index, 1))
+//         }
+//         renderHand(this)
+//         return this.hand
+//     }
 
-    }
-    trashSpecific() {
+//     trashRandom() {
 
-    }
-}
+//     }
+//     trashSpecific() {
 
-function makeDeck() {
-    // makes a starter deck
-    let deck = [];
-    deck.push(...makeCards(7, cardsArr.copper))
-    deck.push(...makeCards(3, cardsArr.estate))
-    return deck
-}
+//     }
+// }
+
+
 
 function makeSupply(nPlayers) {
     if (nPlayers === 2) {
@@ -144,13 +162,7 @@ function makeSupply(nPlayers) {
     
 }
 
-function shuffle(cardsArr) {
-    let shuffled = [];
-    while (cardsArr.length > 0) {
-        shuffled.push(cardsArr.splice(Math.floor(Math.random() * cardsArr.length), 1)[0]) // remember to de-reference splice
-    }
-    return shuffled
-}
+
 
 function renderStacks(supply) {
     let parent = document.getElementById('supply');
