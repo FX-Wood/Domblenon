@@ -1,4 +1,88 @@
+* {
+    border: 1px red solid;
+}
+
+body, html {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+}
+.game {
+    padding: 1em;
+}
+h2 {
+    display: inline-block;
+}
+
 .hand-card {
     width: 100px;
     margin: 1em;
+}
+
+.stack {
+    display: inline-block;
+    margin: 1em 00 1em;
+    width: 7em;
+    height: 10em;
+    line-height: 10em;
+    border: 1px solid black;
+    border-radius: 10%;
+    text-align: center;
+    background-color: rgba(0,0,0,.1)
+}
+
+
+
+.stack__img {
+    max-width: 6em;
+    max-height: 9em;
+    margin: .5em auto;
+    box-sizing: border-box;
+    border-radius: .5em;
+    border: .25em solid black;
+}
+
+.stack__img:hover {
+    transform: scale(2);
+}
+
+
+.stack--trash {
+    width: 25em;
+    height: 13em;
+    border-radius: 1em; 
+}
+.stack__img--trash {
+    max-width: 100%;
+    max-height: 12em;
+    margin: .5em;
+    border-radius: 1em;
+}
+
+.game-section__player {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    display: grid;
+    grid-template-columns: 15fr 60fr 15fr;
+    grid-template-rows: 5fr 5fr;
+    grid-template-areas:
+    "play play play"
+    "deck hand discard"
+
+}
+
+.player-item__deck {
+    grid-area: deck;    
+}
+.player-item__discard {
+    grid-area: discard;
+}
+.player-item__in-play {
+    grid-area: play;
+}
+.player-item__hand {
+    grid-area: hand;
+    text-align: center;
 }
