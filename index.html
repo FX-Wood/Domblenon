@@ -8,53 +8,17 @@
     <title>Domblenon</title>
 </head>
 <body>
-    <main class="game">
-        <div id="supply" class="game-section__supply">
-            <!-- <div class="supply-area__base-set"></div>
-                <h1>Basic Supply</h1>
-                <div class="stack"><img class="stack__img" id="copper" src="./img/base/stack-empty0.jpg" alt="Copper" /></div>
-                <div class="stack"><img class="stack__img" id="silver" src="./img/base/stack-empty0.jpg" alt="Silver" /></div>
-                <div class="stack"><img class="stack__img" id="gold" src="./img/base/stack-empty0.jpg" alt="Gold" /></div>
-                <div class="stack"><img class="stack__img" id="estate" src="./img/base/stack-empty0.jpg" alt="Estate" /></div>
-                <div class="stack"><img class="stack__img" id="duchy" src="./img/base/stack-empty0.jpg" alt="Duchy" /></div>
-                <div class="stack"><img class="stack__img" id="province" src="./img/base/stack-empty0.jpg" alt="Province" /></div>
-                <div class="stack"><img class="stack__img" id="curse" src="./img/base/stack-empty0.jpg" alt="Curse" /></div>
-            <div class="supply-area__kingdom"></div>
-                <h1>Kingdom</h1>
-                <div class="stack"><img class="stack__img" src="./img/base/stack-empty0.jpg" alt="Copper" /></div>
-                <div class="stack"><img class="stack__img" src="./img/base/stack-empty0.jpg" alt="Copper" /></div>
-                <div class="stack"><img class="stack__img" src="./img/base/stack-empty0.jpg" alt="Copper" /></div>
-                <div class="stack"><img class="stack__img" src="./img/base/stack-empty0.jpg" alt="Copper" /></div>
-                <div class="stack"><img class="stack__img" src="./img/base/stack-empty0.jpg" alt="Copper" /></div>
-                <br>
-                <div class="stack"><img class="stack__img" src="./img/base/stack-empty0.jpg" alt="Copper" /></div>
-                <div class="stack"><img class="stack__img" src="./img/base/stack-empty0.jpg" alt="Copper" /></div>
-                <div class="stack"><img class="stack__img" src="./img/base/stack-empty0.jpg" alt="Copper" /></div>
-                <div class="stack"><img class="stack__img" src="./img/base/stack-empty0.jpg" alt="Copper" /></div>
-                <div class="stack"><img class="stack__img" src="./img/base/stack-empty0.jpg" alt="Copper" /></div>
-            <div class="supply-area__trash"></div>
-                <h1>Trash</h1>
-                <div class="stack stack--trash"><img src="./img/base/trash.jpg" alt="trash mat" class="stack__img--trash"></div> -->
-        </div>
-        <div id="player" class="game-section__player">
-            <div class="player-item__deck"></div>
-            <div class="player-item__discard"></div>
-            <div class="player-item__in-play"></div>
-            <div class="player-item__hand"></div>
-        </div>
-    </main>
-    <section class="modals">
-        <div class="modal modal--welcome">
-            <div class="modal--welcome__header"></div>
-            <div class="modal--welcome__body">
-                <select name="num-players" id="num-players">
-                    <option value="2">2 players</option>
-                </select>
-                <label for="num-players" id="num-players">Number of players</label>
+    <main class="domblenon">
+        <section class="action-box">
+            <h1 class="action-box__header">Actions</h1>
+            <button id="exit" class="action-box__close-btn">DONE WITH ACTIONS</button>
+            <div id="cards" class="action-box__cards"></div>
+            <div class="action-box__hand">
+                <h4>Hand</h4>
+            
             </div>
-        </div>
-        <div class="modal modal--switch-turns"></div>
-    </section>
+        </section>
+    </main>
 
     <script src="./js/app.js"></script>
 </body>

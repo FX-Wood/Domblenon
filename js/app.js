@@ -18,35 +18,56 @@ class Card {
         this.play = playMethod;
         // dlog(`Card(${name})`);
     }
+
+    render(hook, id, state) {
+        if (!state) {
+            state = null;
+        }
+        let wrap = document.createElement('div');
+        let img = document.createElement('img');
+        let title = document.createElement('p')
+        wrap.className = !state ? "card__wrap" : `card__wrap--${state}`;
+        img.className = "card__img";
+        img.id = id;
+        title.className = "card__title";
+        img.src = this.imageUrl;
+        title.textContent = `${this.name}`;
+        hook.appendChild(wrap);
+        wrap.appendChild(img);
+        wrap.appendChild(title);
+        console.log('rendering', this, wrap)
+        console.log(this.play)
+        wrap.addEventListener('click', this.play)
+        return wrap;
+    }
 }
 
 const PLAY = {
-    treasure: function(i) {
+    treasure: function(player) {
         // for now we will use a simple index
         // e will be an event, html cards in hand must have ids that will parse to an integer index for position in hand
         let player = PLAYERS[TURN];
         if (PHASE === "buy") {
-            player.played.push(player.hand.splice(i, 1)[0])
+            player.played.push(player.hand.splice(e.target.id, 1)[0])
             player.treasure += this.treasureVal;
         }
     },
-    victory: function(i) {
+    victory: function(player) {
         // do nothing
     },
-    smithy: function(i) {
+    smithy: function(player) {
         let player = PLAYERS[TURN];
         console.log(this)
         if (PHASE === 'action' && player.actions > 0) {
-            player.played.push((player.hand.splice(i, 1)[0]))
+            player.played.push((player.hand.splice(e.target.id, 1)[0]))
             player.actions--
             player.draw(3);
         }
     },
-    witch: function(i) {
-        let player = PLAYERS[TURN];
+    witch: function(player) {
         console.log(this);
-        if (PHASE === 'action' && player.actions > 0) {
-            player.played.push((player.hand.splice(i, 1)[0]))
+         {
+            player.played.push((player.hand.splice(e.target.id, 1)[0]))
             player.actions--
             player.draw(2);
             PLAYERS.forEach((opponent, index) => {
@@ -54,6 +75,16 @@ const PLAY = {
                     opponent.gain("Curse")
                 }
             })
+        }
+    },
+    village: function(e) {
+        console.log('clicked', this)
+        let player = PLAYERS[TURN];
+        console.log(this) 
+        if (PHASE === 'action' && player.actions > 0) {     // if action phase and enough actions
+               // move the card from hand to played
+            player.draw(1);                                 // draw 1
+            player.actions += 2;                            // increase actions
         }
     }
 }
@@ -71,7 +102,7 @@ const CARDS = {
     Chapel: ["Chapel", 2, true, "img/original/chapel.jpg", "Action", 0, 0, PLAY.kingdom],
     Gardens: ["Gardens", 4, true, "img/original/gardens.jpg", "Victory", 0, 0, PLAY.kingdom],
     Smithy: ["Smithy", 4, true, "img/original/smithy.jpg", "Action", 0, 0, PLAY.smithy],
-    Village: ["Village", 3, true, "img/original/village.jpg", "Action", 0, 0, PLAY.kingdom], 
+    Village: ["Village", 3, true, "img/original/village.jpg", "Action", 0, 0, PLAY.village], 
     Witch: ["Witch", 5, true, "img/original/witch.jpg", "Action-Attack", 0, 0, PLAY.witch],
 }
 
@@ -105,6 +136,7 @@ class Player {
         this.turnState = null;
         this.deck = [];
         this.hand = [];
+        this.uiHand = []
         this.played = []
         this.discard = [];
         this.treasure = 0;
@@ -117,9 +149,9 @@ class Player {
         dlog(`makeDeck(${this.name})`);
         // makes a starter deck
         let deck = [];
-        deck.push(...makeCards(20, CARDS.Copper));
-        deck.push(...makeCards(3, CARDS.Estate));
-        deck.push(...makeCards(2, CARDS.Gardens))
+        deck.push(...makeCards(8, CARDS.Copper));
+        deck.push(...makeCards(0, CARDS.Estate));
+        deck.push(...makeCards(2, CARDS.Village))
         return this.deck = this.shuffle(deck, "starting-deck");
     }
     shuffle(cardsArr, nameStr) {
@@ -186,29 +218,34 @@ class Player {
             this.gain(cardName);                            // gain the card
         }
     }
-
-
-    takeTurn() {
-        alert('it\'s your turn ' + this.name )
-        dlog(`starting ${this.name}'s turn`);
-        this.buys = 1;      //reset buys
-        this.actions = 1;   // reset actions
+    playCard(e) {
+        if (PHASE === 'action' && player.actions > 0) {
+            let uiPlayed = document.querySelector('.played');
+            this.hand[e.target.id].play(this);                      // this is current player
+            this.played.push(player.hand.splice(e.target.id, 1));   // move card to played array
+            uiPlayed.appendChild(e.target.ParentElement.removeChild(e.target)) // move ui card to played
+            
+        }
+    }
+    showActionPhase() {
         // action phase
         alert('starting action phase')
         PHASE = 'action'
-        let promptString = 'Hand:'
-        this.hand.forEach((card, i) => {
-            promptString += `
-            [${i}]: ${this.hand[i].name}`;
-        }, this.hand)
-        let input = parseInt(prompt(promptString))
-        if (input) {
-            this.hand[input].play()
-        }
+        let doneButton = document.getElementById('exit');
+        let handHook = document.querySelector('.action-box__cards'); 
+        // generate hand
+        this.hand.forEach((card, index) => {
+            card.render(handHook, index);
+        })
+        // make exit button;
 
 
 
+        // generate input field
 
+    }
+
+    showBuyPhase() {
         // buy phase
         alert('starting buy phase');
         PHASE = 'buy';
@@ -222,7 +259,8 @@ class Player {
         if (input) {
             this.buy(input)
         }
-
+    }
+    cleanupPhase() {
         setTimeout(alert('Ending your turn'), 3000);
         // cleanup
         PHASE = 'cleanup';
@@ -244,6 +282,13 @@ class Player {
 
 
     }
+    takeTurn() {
+        dlog(`starting ${this.name}'s turn`);
+        alert('it\'s your turn ' + this.name )
+        this.buys = 1;          // reset buys
+        this.actions = 1;       // reset actions
+        this.showActionPhase()
+    }
 }
 
 // GLOBALS
@@ -252,7 +297,7 @@ const PLAYERS = [];
 const SUPPLY = makeSupply();
 var TURN = 0;
 var PHASE = null;
-var PAUSE = false;
+var DONE = false;
 dlog(`NUM_PLAYERS: ${NUM_PLAYERS}`);
 dlog(`PLAYERS: ${PLAYERS.map(player => {return 'player 0: ' + player.name})}`);
 dlog(`SUPPLY: ${Object.keys(SUPPLY).reduce((acc, key) => {return acc.concat(Object.entries(SUPPLY[key]).map(entry => entry.reduce((acc, next)=> {return next + ' ' + acc})))}, [])}`)
@@ -347,15 +392,10 @@ var f = PLAYERS[0];
 var a = PLAYERS[1];
 var s = SUPPLY
 
-function mainLoop() {
-    while(!gameOver()) {
-        PLAYERS.forEach(function(player) {
-            player.takeTurn();
-        });
-    };
-    scoreGame()
+function init() {
+    PLAYERS[TURN].takeTurn()
 }
-mainLoop()
+init()
 
 // // 2 players  8 victory, 10 curse 
 // // 3 players  12 victory, 20 curse
