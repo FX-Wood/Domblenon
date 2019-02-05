@@ -35,3 +35,8 @@ The current application structure should support these features, as I've been *t
 
 You may notice that the repository now includes some testing infrastructure. I have been looking at how to implement some unit tests. I have heard of both Mocha and Chai before, and they both had a fair number of search hits for set-up questions. Looking forward to testing!
 
+One thing I forgot to mention-- I tried to implement a debug logger with a function that only console.logs when the global flag is present. This didn't work very well-- any messages passed through appeared in the console as if they came from within the function declaration. Console.log is at least kind enough to pass the line where it is called to the chrome console. 
+
+Also, I could no longer pass in items delimited with commas and have it spit them out.
+
+It turns out that console.log is actually pretty great. 
