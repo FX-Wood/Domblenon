@@ -117,9 +117,9 @@ class Player {
         dlog(`makeDeck(${this.name})`);
         // makes a starter deck
         let deck = [];
-        deck.push(...makeCards(7, CARDS.Copper));
+        deck.push(...makeCards(20, CARDS.Copper));
         deck.push(...makeCards(3, CARDS.Estate));
-        deck.push(...makeCards(2, CARDS.Witch))
+        deck.push(...makeCards(2, CARDS.Gardens))
         return this.deck = this.shuffle(deck, "starting-deck");
     }
     shuffle(cardsArr, nameStr) {
@@ -267,7 +267,7 @@ function makeSupply() {
     switch(NUM_PLAYERS) {
         case 2:
             let supply = {
-                basic: {Copper: 106, Silver: 80, Gold: 60, Estate: 8, Duchy: 8, Province: 8, Curse: 10},
+                basic: {Copper: 1, Silver: 80, Gold: 60, Estate: 8, Duchy: 8, Province: 8, Curse: 10},
                 kingdom: {Chapel: 10, Gardens: 10, Smithy: 10, Village: 10, Witch: 10},
                 trash: []
             }
@@ -320,18 +320,29 @@ function scoreGame() {
         let score = 0;
         console.dir(cards)
         cards.forEach(function(card) {
-            console.log(card)
-            console.log(card.victoryVal)
             score += card.victoryVal
-        })
-        if (player.score > highest.score) {
+        });
+        console.log('score from victory cards: ' + score)
+        if (Object.keys(SUPPLY.kingdom).includes('Gardens')) {
+            let n = Math.floor(cards.length/10);
+            let g = 0;
+            cards.forEach(card => {
+                if (card.name === "Gardens") {
+                    g++
+                }
+            });
+            console.log(`${player.name} scored ${n * g} with Gardens. d/10: ${n} g: ${g}`)
+            score += g * n
+        };
+        console.log(player.score, highest.score, player.score > highest.score)
+        if (score > highest.score) {
             highest.name = player.name;
-            highest.score = player.score;
-        }
-    })
+            highest.score = score;
+        };
+    });
     alert('the player with the highest score was: ' + highest.name + ' with a score of ' + highest.score + '. Congratulations! Good game, and thank you for playing.')
     return highest
-}
+};
 var f = PLAYERS[0];
 var a = PLAYERS[1];
 var s = SUPPLY
@@ -340,7 +351,7 @@ function mainLoop() {
     while(!gameOver()) {
         PLAYERS.forEach(function(player) {
             player.takeTurn();
-        })
+        });
     };
     scoreGame()
 }
