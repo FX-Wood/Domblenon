@@ -1,0 +1,23 @@
+{
+  "name": "domblenon",
+  "version": "0.0.1",
+  "description": "Demo port of Dominion, originally by Donald X. Vaccarino",
+  "main": "js/app.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fx-wood/domblenon.git"
+  },
+  "author": "FX Wood",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/fx-wood/domblenon/issues"
+  },
+  "homepage": "https://github.com/fx-wood/domblenon#readme",
+  "dependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0"
+  }
+}
