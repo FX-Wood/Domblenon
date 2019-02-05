@@ -14,6 +14,7 @@ class Card {
         this.imageUrl = imageUrl;
         this.type = type;
         this.treasureVal = treasureVal;
+        this.victoryVal = victoryVal
         this.play = playMethod;
         // dlog(`Card(${name})`);
     }
@@ -34,11 +35,25 @@ const PLAY = {
     },
     smithy: function(i) {
         let player = PLAYERS[TURN];
-        console.log()
+        console.log(this)
         if (PHASE === 'action' && player.actions > 0) {
-                player.actions--
-                player.draw(3);
-                player.played.push((player.hand.splice(i, 1)[0]))
+            player.played.push((player.hand.splice(i, 1)[0]))
+            player.actions--
+            player.draw(3);
+        }
+    },
+    witch: function(i) {
+        let player = PLAYERS[TURN];
+        console.log(this);
+        if (PHASE === 'action' && player.actions > 0) {
+            player.played.push((player.hand.splice(i, 1)[0]))
+            player.actions--
+            player.draw(2);
+            PLAYERS.forEach((opponent, index) => {
+                if (index !== TURN) {
+                    opponent.gain("Curse")
+                }
+            })
         }
     }
 }
@@ -57,7 +72,7 @@ const CARDS = {
     Gardens: ["Gardens", 4, true, "img/original/gardens.jpg", "Victory", 0, 0, PLAY.kingdom],
     Smithy: ["Smithy", 4, true, "img/original/smithy.jpg", "Action", 0, 0, PLAY.smithy],
     Village: ["Village", 3, true, "img/original/village.jpg", "Action", 0, 0, PLAY.kingdom], 
-    Witch: ["Witch", 5, true, "img/original/witch.jpg", "Action-Attack", 0, 0, PLAY.kingdom],
+    Witch: ["Witch", 5, true, "img/original/witch.jpg", "Action-Attack", 0, 0, PLAY.witch],
 }
 
 // makes 0 to n cards, takes n and an array of arguments for the card constructor
@@ -104,6 +119,7 @@ class Player {
         let deck = [];
         deck.push(...makeCards(7, CARDS.Copper));
         deck.push(...makeCards(3, CARDS.Estate));
+        deck.push(...makeCards(2, CARDS.Witch))
         return this.deck = this.shuffle(deck, "starting-deck");
     }
     shuffle(cardsArr, nameStr) {
@@ -298,14 +314,15 @@ function scoreGame() {
         name: null,
         score: null
     };
-    players.forEach(function(player) {
+    PLAYERS.forEach(function(player) {
         console.log(`checking ${player.name}'s score`)
-        let cards = [];
+        let cards = [].concat(player.hand, player.deck, player.discard)
         let score = 0;
-        cards.concat(player.hand.splice(), player.deck.splice(), player.discard.splice())
         console.dir(cards)
         cards.forEach(function(card) {
-            score += card.victory
+            console.log(card)
+            console.log(card.victoryVal)
+            score += card.victoryVal
         })
         if (player.score > highest.score) {
             highest.name = player.name;
@@ -325,6 +342,7 @@ function mainLoop() {
             player.takeTurn();
         })
     };
+    scoreGame()
 }
 mainLoop()
 
