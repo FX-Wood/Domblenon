@@ -50,3 +50,5 @@ I also gave the Card class a render method. It takes three parameters, an HTML n
 
 Village is now implemented as well. It draws and increments actions.
 
+## Day 4
+As I kick off Domblenon this morning, it works pretty well. 
