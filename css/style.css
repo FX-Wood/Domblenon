@@ -11,7 +11,7 @@ html, body {
     grid-template-columns: 3fr 3fr 3fr;
     grid-template-rows: 1fr 4fr 4fr 2fr;
     grid-template-areas:
-    "header header button"
+    "header header exit"
     "played played played"
     "hand hand hand"
     "deck discard discard"
@@ -19,8 +19,8 @@ html, body {
 .player-box__header {
     grid-area: header;
 }
-.player-box__button {
-    grid-area: button;
+.player-box__exit {
+    grid-area: exit;
 }
 .player-box__played {
     grid-area: played;
@@ -34,12 +34,58 @@ html, body {
 .player-box__discard {
     grid-area: discard;
 }
+.player-box__btn {
+    grid-area: btn;
+}
 .player-box__played, .player-box__hand {
 
 }
-.card__wrap {
+.card__wrap, .card__wrap--played {
     display: inline-block;
 }
 .card__img {
     max-width: 8em;
 }
+
+
+.player-box--buy {
+    display: grid;
+    grid-template-columns: 5fr 2fr 3fr;
+    grid-template-rows: 1fr 5fr 2fr 2fr ;
+    grid-template-areas:
+    "header btn exit"
+    "supply supply supply"
+    "played played played"
+    "hand hand hand"
+}
+.player-box__header--buy {
+    grid-area: header;
+}
+.player-box__btn--buy {
+    grid-area: btn;
+}
+.player-box__exit--buy {
+    grid-area: exit;
+}
+.player-box__played--buy {
+    grid-area: played;
+}
+.player-box__hand--buy {
+    grid-area: hand;
+}
+.player-box__deck--buy {
+    grid-area: deck;
+}
+.player-box__discard--buy {
+    grid-area: discard;
+}
+.player-box__supply--buy {
+    grid-area: supply;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 2.5fr 2.5fr;
+    grid-template-areas:
+    "basic"
+    "kingdom"
+}
+
