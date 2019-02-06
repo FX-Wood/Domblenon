@@ -9,17 +9,16 @@
 </head>
 <body>
     <main class="domblenon">
-        <section class="action-box">
-            <h1 class="action-box__header">Actions</h1>
-            <button id="exit" class="action-box__close-btn">DONE WITH ACTIONS</button>
-            <div id="cards" class="action-box__cards"></div>
-            <div class="action-box__hand">
-                <h4>Hand</h4>
-            
+        <section id='player-box' class="player-box">
+            <h1 class="player-box__header">Player Box</h1>
+            <button id="exit" class="player-box__close-btn">DONE WITH ACTIONS</button>
+                <div id="uiplayed" class="player-box__played"></div>
+                <div id="uihand" class="player-box__hand"></div>
+                <div class="player-box__deck"></div>
+                <div class="player-box__discard"></div>
             </div>
         </section>
     </main>
-
     <script src="./js/app.js"></script>
 </body>
 </html>

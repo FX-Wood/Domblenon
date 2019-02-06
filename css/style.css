@@ -1,26 +1,45 @@
+* {
+    border: 1px solid red;
+}
 html, body {
     width: 100vw;
     height: 100vh;
     margin: 0;
 }
-
-.action-box__cards {
+.player-box {
     display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: 5fr 5fr;
+    grid-template-columns: 3fr 3fr 3fr;
+    grid-template-rows: 1fr 4fr 4fr 2fr;
     grid-template-areas:
-    "played"
-    "hand"
+    "header header button"
+    "played played played"
+    "hand hand hand"
+    "deck discard discard"
+}
+.player-box__header {
+    grid-area: header;
+}
+.player-box__button {
+    grid-area: button;
+}
+.player-box__played {
+    grid-area: played;
+}
+.player-box__hand {
+    grid-area: hand;
+}
+.player-box__deck {
+    grid-area: deck;
+}
+.player-box__discard {
+    grid-area: discard;
+}
+.player-box__played, .player-box__hand {
+
 }
 .card__wrap {
     display: inline-block;
-    grid-area: hand;
-    margin: 1em;
 }
-.card__wrap--played {
-    grid-area: played;
-}
-
-.hand__img {
+.card__img {
     max-width: 8em;
 }

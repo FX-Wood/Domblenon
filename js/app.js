@@ -16,6 +16,8 @@ class Card {
         this.treasureVal = treasureVal;
         this.victoryVal = victoryVal
         this.play = playMethod;
+        this.ui;
+        this.uiState;
         // dlog(`Card(${name})`);
     }
 
@@ -37,7 +39,7 @@ class Card {
         wrap.appendChild(title);
         console.log('rendering', this, wrap)
         console.log(this.play)
-        wrap.addEventListener('click', this.play)
+        this.ui = wrap
         return wrap;
     }
 }
@@ -77,15 +79,11 @@ const PLAY = {
             })
         }
     },
-    village: function(e) {
-        console.log('clicked', this)
-        let player = PLAYERS[TURN];
-        console.log(this) 
-        if (PHASE === 'action' && player.actions > 0) {     // if action phase and enough actions
-               // move the card from hand to played
-            player.draw(1);                                 // draw 1
-            player.actions += 2;                            // increase actions
-        }
+    village: function(player) {
+        console.log('clicked this: ', this)
+        console.log('player', player)
+        player.draw(1);               // + 1 cards
+        player.actions += 2;          // + 2 actions
     }
 }
 
@@ -136,12 +134,14 @@ class Player {
         this.turnState = null;
         this.deck = [];
         this.hand = [];
-        this.uiHand = []
-        this.played = []
+        this.uiHand = [];
+        this.played = [];
         this.discard = [];
         this.treasure = 0;
         this.actions = 1;
         this.buys = 1;
+        this.uiHand = document.getElementById('uihand')
+        this.uiPlayed = document.getElementById('uiplayed')
 
         dlog(`Player(${index})`);
     }
@@ -219,20 +219,39 @@ class Player {
         }
     }
     playCard(e) {
-        if (PHASE === 'action' && player.actions > 0) {
-            let uiPlayed = document.querySelector('.played');
+        if (PHASE === 'action' && this.actions > 0) {
             this.hand[e.target.id].play(this);                      // this is current player
-            this.played.push(player.hand.splice(e.target.id, 1));   // move card to played array
-            uiPlayed.appendChild(e.target.ParentElement.removeChild(e.target)) // move ui card to played
-            
+            this.played.push(this.hand.splice(e.target.id, 1));   // move card to played array
+            this.uiRefresh()
         }
+    }
+    uiRefresh() {
+        // clear hand
+        while(this.uiHand.firstChild) {
+            this.uiHand.removeChild(this.uiHand.firstChild)
+        }
+        // clear played
+        while(this.uiPlayed.firstChild) {
+            this.uiPlayed.removeChild(this.uiPlayed.firstChild)
+        }
+        // render hand
+        this.hand.forEach((card, id) => {
+            card.render(this.uiHand, id)
+        }, this)
+        // render played
+        this.played.forEach((card, id) => {
+            let c = card.render(this.uiPlayed, id)
+            c.addEventListener(this.playCard)
+
+        },this)
+
     }
     showActionPhase() {
         // action phase
         alert('starting action phase')
         PHASE = 'action'
         let doneButton = document.getElementById('exit');
-        let handHook = document.querySelector('.action-box__cards'); 
+        let handHook = document.querySelector('.player-box__hand'); 
         // generate hand
         this.hand.forEach((card, index) => {
             card.render(handHook, index);
@@ -279,8 +298,6 @@ class Player {
         console.log('TURN', TURN, 'NUM_PLAYERS', NUM_PLAYERS, 'MOD', TURN % NUM_PLAYERS)
         this.draw(5)                                // draw up to five cards
         dlog(`end of ${this.name}'s turn`)          // return to main loop
-
-
     }
     takeTurn() {
         dlog(`starting ${this.name}'s turn`);
