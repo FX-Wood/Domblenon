@@ -8,20 +8,37 @@
     <title>Domblenon</title>
 </head>
 <body>
-    <main class="domblenon">
-        <section id='player-box' class="player-box">
-            <button id="ui-btn-0" class="player-box__btn"></button>
-            <h1 class="player-box__header">Player Box</h1>
-            <button id="exit" class="player-box__exit">DONE WITH ACTIONS</button>
-            <div id="supply" class="player-box__supply">
-                <div id="supply-basic" class="supply__basic"></div>
-                <div id="supply-kingdom" class="supply__kingdom"></div>
+    <main id='app' class="app">
+        <section class="head">
+            <h1 id="title" class="head__title">Player Box</h1>
+            <button id="exit" class="head__exit">DONE WITH ACTIONS</button>
+        </section>  
+
+        <section id="supply" class="supply">
+            <h3 class="title--supply">Supply</h3>
+            <div id="supply-basic" class="card__scroll"></div>
+            <div id="supply-kingdom" class="card__scroll"></div>
+        </section>
+
+        <section class="player">
+            <button id="ui-btn-0" class="player__btn">AUTOPLAY TREASURES</button>
+            <h3 class="title--played">Cards Played this turn</h3>
+            <div id="played" class="card__scroll"></div>
+            <h3 class="title--hand">Cards in hand</h3>
+            <div id="hand" class="card__scroll"></div>
+            
+            <div id="deck-discard" class="player__deck-discard">
+                <div class="left">
+                    <h3 class="title--deck">Deck</h3>
+                    <div id="deck" class="card__scroll"></div>
+                </div>
+                <div class="right">
+                    <h3 class="title--discard">Discard</h3>
+                    <div id="discard" class="card__scroll"></div>
+                </div>
             </div>
-            <div id="played" class="player-box__played"></div>
-            <div id="hand" class="player-box__hand"></div>
-            <div class="player-box__deck"></div>
-            <div class="player-box__discard"></div>
-            </div>
+            <h3 class="title--trash">Trash</h3>
+            <div id="trash" class="card__scroll"></div>
         </section>
     </main>
     <script src="./js/app.js"></script>

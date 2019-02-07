@@ -1,91 +1,156 @@
-* {
-    border: 1px solid red;
-}
+
 html, body {
     width: 100vw;
     height: 100vh;
     margin: 0;
+    max-width: 100%;
 }
-.player-box {
+body {
+    
+}
+/* Main grid setup */
+.app {
+    margin: 1em;
+    box-sizing: border-box;
     display: grid;
     grid-template-columns: 3fr 3fr 3fr;
-    grid-template-rows: 1fr 4fr 4fr 2fr;
+    grid-template-rows: fit-content fit-content fit-content;
     grid-template-areas:
-    "header header exit"
-    "played played played"
-    "hand hand hand"
-    "deck discard discard"
+    "head head head"
+    "supply supply supply"
+    "player player player"
 }
-.player-box__header {
-    grid-area: header;
-}
-.player-box__exit {
-    grid-area: exit;
-}
-.player-box__played {
-    grid-area: played;
-}
-.player-box__hand {
-    grid-area: hand;
-}
-.player-box__deck {
-    grid-area: deck;
-}
-.player-box__discard {
-    grid-area: discard;
-}
-.player-box__btn {
-    grid-area: btn;
-}
-.player-box__played, .player-box__hand {
 
+.head {
+    grid-area: head;
 }
-.card__wrap, .card__wrap--played {
+
+.supply {
+    grid-area: supply;
+}
+
+.player {
+    grid-area: player;
+}
+/* End of main grid setup */
+
+
+.head__title {
     display: inline-block;
 }
+.card__scroll {
+    display: grid;
+    grid-auto-columns: min-content;
+    grid-template-rows: 20em;       /*  this sets the height of card windows*/
+    overflow: auto;
+    justify-content: center;
+}
+
+.card {
+    display: inline-block;
+    padding: 1em;
+    border-radius: 2em;
+}
+
 .card__img {
-    max-width: 8em;
+    max-height: 18em;
+}
+
+/* supply area */
+
+.title--supply {
+    grid-row: 1;
+    padding: 1em;
+    border-radius: 1em;
+    background-color: rgba(18, 122, 241, 0.301)
+}
+.card--supply {
+    margin: 0 .5em;
+    grid-row: 1;
+    display: inline-block;
+    padding: 1em;
+    border-radius: 1em;
+    background-color: rgba(18, 122, 241, 0.301)
+}
+
+/* played area */
+.title--played {
+    grid-row: 1;
+    padding: 1em;
+    border-radius: 1em;
+    background-color: rgba(238, 159, 13, 0.45);
+}
+
+.card--played {
+    margin: 0 .5em;
+    grid-row: 1;
+    display: inline-block;
+    padding: 1em;
+    border-radius: 1em;
+    background-color: rgba(238, 159, 13, 0.45)
+}
+
+/* hand area */
+.title--hand {
+    grid-row: 1;
+    padding: 1em;
+    border-radius: 1em;
+    background-color: rgba(46, 255, 27, 0.3);
+}
+.card--hand {
+    margin: 0 .5em;
+    grid-row: 1;
+    display: inline-block;
+    padding: 1em;
+    border-radius: 1em;
+    background-color: rgba(46, 255, 27, 0.3)
+}
+
+/* deck */
+.player__deck-discard * {
+    border: 1px solid red;
+}
+.left, .right {
+    display: inline-block;
 }
 
 
-.player-box--buy {
-    display: grid;
-    grid-template-columns: 5fr 2fr 3fr;
-    grid-template-rows: 1fr 5fr 2fr 2fr ;
-    grid-template-areas:
-    "header btn exit"
-    "supply supply supply"
-    "played played played"
-    "hand hand hand"
+.title--deck {
+    grid-row: 1;
+    padding: 1em;
+    border-radius: 1em;
+    background-color: rgba(255, 27, 27, 0.3);
 }
-.player-box__header--buy {
-    grid-area: header;
+.card--deck {
+    margin: 0 .5em;
+    grid-row: 1;
+    padding: 1em;
+    border-radius: 1em;
+    background-color: rgba(255, 27, 27, 0.3);
 }
-.player-box__btn--buy {
-    grid-area: btn;
+
+/* discard */
+
+.title--discard {
+    grid-row: 1;
+    padding: 1em;
+    border-radius: 1em;
+    background-color: rgba(255, 27, 27, 0.3);
 }
-.player-box__exit--buy {
-    grid-area: exit;
+.card--discard {
+    margin: 0 .5em;
+    grid-row: 1;
+    padding: 1em;
+    border-radius: 1em;
+    background-color: rgba(255, 27, 27, 0.3);
 }
-.player-box__played--buy {
-    grid-area: played;
-}
-.player-box__hand--buy {
-    grid-area: hand;
-}
-.player-box__deck--buy {
-    grid-area: deck;
-}
-.player-box__discard--buy {
-    grid-area: discard;
-}
-.player-box__supply--buy {
-    grid-area: supply;
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: 2.5fr 2.5fr;
-    grid-template-areas:
-    "basic"
-    "kingdom"
+
+/* trash */
+
+.title--trash {
+    grid-row: 1;
+    padding: 1em;
+    border-radius: 1em;
+    background-color: rgba(46, 255, 27, 0.3);
 }
 

@@ -19,37 +19,58 @@ const UI = {
         }
         return parent
     },
+    renderTitle: function() {
+        console.log('rendering title', PLAYERS[TURN].name);
+        UI.title.textContent = `${PLAYERS[TURN].name}: ${PHASE} phase`;
+    },
     renderSupply: function() {
-        console.log(UI.supply.children[0])
         let basic = UI.removeChildren(UI.basicSupply);
         let kingdom = UI.removeChildren(UI.kingdomSupply);
         for (type in SUPPLY) {
-            console.log(type)
             for (stack in SUPPLY[type]) {
-                console.log(stack, SUPPLY[type])
-                console.log(!!stack, stack !== "trash")
                 if (stack && stack !== "trash") {
                     let card = new Card(...CARDS[stack]);
                     let name = card.name;
-                    card.render(type === "basic"? basic : kingdom, this.name)
+                    card.render(type === "basic"? basic : kingdom, this.name, "supply")
                     .addEventListener('click', e => {PLAYERS[TURN].buy(name)})
                 } else {
-                    new Card(...CARDS["Empty"]).render(type, this.name)
+                    new Card(...CARDS["Empty"]).render(type, this.name, "empty")
                 }
             }
+        }
+    },
+    renderDeck: function() {
+        let uiDeck = UI.removeChildren(UI.deck);
+        if (PLAYERS[TURN].deck) {
+            new Card(...CARDS["CardBack"]).render(uiDeck, "CardBack", "deck")
+        } else {
+            new Card(...CARDS["Empty"]).render(uiDeck, "Empty", "empty")
+        }
+    },
+    renderDiscard() {
+        let uiDiscard = UI.removeChildren(UI.discard)
+        let player = PLAYERS[TURN];
+        if (player.discard) {
+            player.discard.forEach((card, id) => {
+                card.render(uiDiscard, id, "discard")
+            })
         }
     }
 };
 
 document.addEventListener('DOMContentLoaded', function init() {
-        UI.box = document.getElementById('player-box');
-        UI.btn = document.getElementById('ui-btn-0');
+        UI.box = document.getElementById('app');
+        UI.title = document.getElementById('title');
         UI.exit =  document.getElementById('exit');
         UI.supply = document.getElementById('supply');
         UI.basicSupply = document.getElementById('supply-basic');
         UI.kingdomSupply = document.getElementById('supply-kingdom');
+        UI.btn = document.getElementById('ui-btn-0');
         UI.hand = document.getElementById('hand');
         UI.played = document.getElementById('played')
+        UI.deck = document.getElementById('deck')
+        UI.hand = document.getElementById('hand')
+        UI.discard = document.getElementById('discard')
     PLAYERS.forEach(player => {
         //player.name = prompt(`Player ${player.index}, what is your name?`)
         console.log(this)
@@ -84,20 +105,21 @@ class Card {
         if (!state) {
             state = null;
         }
+        // make a wrapper div
         let wrap = document.createElement('div');
+        wrap.className = !state ? "card" : `card--${state}`;
+        hook.appendChild(wrap);
+        // make a card image
         let img = document.createElement('img');
-        let title = document.createElement('p')
-        wrap.className = !state ? "card__wrap" : `card__wrap--${state}`;
         img.className = "card__img";
         img.id = id;
-        title.className = "card__title";
         img.src = this.imageUrl;
-        title.textContent = `${this.name}`;
-        hook.appendChild(wrap);
+        img.alt = this.name
+        // add information about card to itself
+        this.ui = wrap;
+        this.uiState = state;
+        // append image to page
         wrap.appendChild(img);
-        wrap.appendChild(title);
-        console.log('rendering', this, wrap)
-        this.ui = wrap
         return wrap;
     }
 }
@@ -143,7 +165,8 @@ const CARDS = {
     Smithy: ["Smithy", 4, true, "img/original/smithy.jpg", "Action", 0, 0, PLAY.smithy],
     Village: ["Village", 3, true, "img/original/village.jpg", "Action", 0, 0, PLAY.village], 
     Witch: ["Witch", 5, true, "img/original/witch.jpg", "Action-Attack", 0, 0, PLAY.witch],
-    Empty: ["Empty", null, false, "img/base/stack-empty0.jpg", null, null, null, null]
+    Empty: ["Empty", null, false, "img/stack-empty0.jpg", null, null, null, null],
+    CardBack: ["CardBack", null, false, "img/card-back.jpg", null, null, null, null]
 }
 
 // makes 0 to n cards, takes n and an array of arguments for the card constructor
@@ -207,20 +230,15 @@ class Player {
     }
     draw(n) {
         dlog(`draw(${n}) from ${this.deck}`)
-        console.dir(this.deck)
         while (n > 0) {
             if (this.deck.length > 0) { // if you can, draw
-                console.log('deck exists')
                 dlog(`drew ${this.deck[this.deck.length-1].name}`)
                 this.hand.push(this.deck.pop()) 
             } else if (this.discard.length > 0) { // if you need to shuffle, shuffle
                 console.log('shuffling your deck, hang on.', this.discard.length, 'cards in discard pile')
-                console.log(this.name)
-                console.dir(this.discard)
+
                 this.deck = this.discard.splice(0)
-                console.dir(this.deck)
                 this.deck = this.shuffle(this.deck, `${this.name}'s deck`)
-                console.dir(this.deck)
                 this.hand.push(this.deck.pop()) 
             }
             if (!this.deck && !this.discard) { // if you are out of cards, don't draw
@@ -229,6 +247,7 @@ class Player {
             }
             n--
         }
+        UI.renderDeck()
     }
     gain(cardName) {
         for (let type in SUPPLY) {
@@ -236,6 +255,7 @@ class Player {
                     SUPPLY[type][cardName]--;                                       // remove it from the supply
                     this.discard.push(new Card(...(CARDS[cardName])));              // add it to current player's discard pile
                     UI.renderSupply();
+                    UI.renderDiscard()
                 }
             }
         }
@@ -251,8 +271,6 @@ class Player {
         console.log(cardName)
         let card = new Card(...(CARDS[cardName]));
         if (this.treasure >= card.cost && this.buys > 0) {  // if you have enough treasure and enough buys:
-            console.log('treasure amt', this.treasure, 'card.cost', card.cost, 'buys', this.buys)
-            console.log(this.treasure >= card.cost && this.buys > 0)
             this.treasure -= card.cost;                     // pay the cost of the card
             this.buys--;                                    // decrement the number of buys you have
             this.gain(cardName);                            // gain the card
@@ -263,24 +281,20 @@ class Player {
         if (player.hand[e.target.id].type.includes("Action") && PHASE === 'action' && player.actions > 0) {
             player.hand[e.target.id].play(player);
             player.played.push(player.hand.splice(e.target.id, 1)[0]);   // move card to played array
-            player.uiHandRefresh()
-            player.uiPlayedRefresh()
         }
         if (player.hand[e.target.id].type.includes("Treasure") && PHASE === 'buy') {
             player.hand[e.target.id].play(player);
             player.played.push(player.hand.splice(e.target.id, 1)[0]);
-            player.uiHandRefresh()
-            player.uiPlayedRefresh()
         }
+        player.uiHandRefresh()
+        player.uiPlayedRefresh()
     }
     uiHandRefresh() {
-        console.log(this)
-        // clear hand
         while(this.uiHand.firstChild) {
             this.uiHand.removeChild(this.uiHand.firstChild)
         }
         this.hand.forEach((card, id) => {
-            let c = card.render(this.uiHand, id)
+            let c = card.render(this.uiHand, id, "hand")
             // 'this' actually works in event handler. Maybe because it's explicitly bound in call of forEach?
             c.addEventListener('click', this.playCard, {once: true}) 
         }, this);
@@ -291,38 +305,32 @@ class Player {
             this.uiPlayed.removeChild(this.uiPlayed.firstChild)
         }
         // render played
-        console.log('played', this.played)
         this.played.forEach((card, id) => {
             card.render(this.uiPlayed, id, "played")
         },this);
     }
     actionPhase() {
         // action phase
-        alert('starting action phase');
         PHASE = 'action';
-        this.uiButton.addEventListener('click',e => {this.buyPhase()}, {once: true})
+        UI.renderTitle()
+        UI.exit.textContent = 'DONE WITH ACTION PHASE'
+        UI.exit.addEventListener('click',e => {this.buyPhase()}, {once: true})
         this.uiHandRefresh();
+        UI.renderSupply()
     }
     buyPhase() {
         // buy phase
-        console.log()
-        alert('starting buy phase')
         PHASE = 'buy';
-        UI.exit.addEventListener('click', e => {this.cleanupPhase()});
+        UI.renderTitle()
+        UI.exit.addEventListener('click', e => {this.cleanupPhase()}, {once: true});
         UI.exit.textContent = "DONE WITH BUY PHASE";
-        UI.box.className+= '--buy'
-        Array.from(UI.box.children).forEach(child => {
-            child.className += '--buy';
-        })
         UI.renderSupply()
     }
     cleanupPhase() {
-        setTimeout(alert('Ending your turn'), 3000);
         // cleanup
         PHASE = 'cleanup';
-        Array.from(UI.box.children).forEach(child => {
-            child.className.replace('--buy', '')
-        })
+        UI.renderTitle()
+        // clear ui
         UI.removeChildren(UI.hand)              // clears ui hand
         UI.removeChildren(UI.played)            // clears ui area for cards in play
         UI.removeChildren(UI.kingdomSupply)     // clears ui of supply cards
@@ -346,6 +354,8 @@ class Player {
         this.buys = 1;          // reset buys
         this.actions = 1;       // reset actions
         this.actionPhase()
+        UI.renderDeck()
+        UI.renderDiscard()
     }
 }
 
