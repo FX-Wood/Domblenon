@@ -1,88 +1,202 @@
-* {
-    border: 1px red solid;
-}
 
-body, html {
+html, body {
     width: 100vw;
     height: 100vh;
     margin: 0;
+    max-width: 100%;
 }
-.game {
+
+/* Main grid setup */
+.app {
+    margin: 1em;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 3fr 3fr 3fr;
+    grid-template-rows: fit-content fit-content fit-content;
+    grid-template-areas:
+    "head head head"
+    "supply supply supply"
+    "player player player"
+}
+
+.head {
+    grid-area: head;
+}
+
+.supply {
+    grid-area: supply;
+}
+
+.player {
+    grid-area: player;
+}
+/* End of main grid setup */
+
+
+.head__title {
+    display: inline-block;
+}
+.head__exit {
+    float: right;
     padding: 1em;
 }
-h2 {
-    display: inline-block;
-}
-
-.hand-card {
-    width: 100px;
-    margin: 1em;
-}
-
-.stack {
-    display: inline-block;
-    margin: 1em 00 1em;
-    width: 7em;
-    height: 10em;
-    line-height: 10em;
-    border: 1px solid black;
-    border-radius: 10%;
-    text-align: center;
-    background-color: rgba(0,0,0,.1)
-}
-
-
-
-.stack__img {
-    max-width: 6em;
-    max-height: 9em;
-    margin: .5em auto;
-    box-sizing: border-box;
-    border-radius: .5em;
-    border: .25em solid black;
-}
-
-.stack__img:hover {
-    transform: scale(2);
-}
-
-
-.stack--trash {
-    width: 25em;
-    height: 13em;
-    border-radius: 1em; 
-}
-.stack__img--trash {
-    max-width: 100%;
-    max-height: 12em;
-    margin: .5em;
-    border-radius: 1em;
-}
-
-.game-section__player {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100vw;
+.card__scroll {
     display: grid;
-    grid-template-columns: 15fr 60fr 15fr;
-    grid-template-rows: 5fr 5fr;
-    grid-template-areas:
-    "play play play"
-    "deck hand discard"
-
+    grid-auto-columns: min-content;
+    grid-template-rows: 20em;       /*  this sets the height of card windows*/
+    overflow: auto;
+    justify-content: center;
 }
 
-.player-item__deck {
-    grid-area: deck;    
+.card {
+    display: inline-block;
+    padding: 1em;
+    border-radius: 2em;
 }
-.player-item__discard {
-    grid-area: discard;
+
+.card__img {
+    max-height: 18em;
 }
-.player-item__in-play {
-    grid-area: play;
+
+/* supply area */
+
+.title--supply {
+    grid-row: 1;
+    padding: 1em;
+    border-radius: 1em;
+    background-color: rgba(18, 122, 241, 0.301)
 }
-.player-item__hand {
-    grid-area: hand;
-    text-align: center;
+.card--supply {
+    margin: 0 .5em;
+    grid-row: 1;
+    display: inline-block;
+    padding: 1em;
+    border-radius: 1em;
+    background-color: rgba(18, 122, 241, 0.301)
+}
+
+/* played area */
+.title--played {
+    grid-row: 1;
+    padding: 1em;
+    border-radius: 1em;
+    background-color: rgba(238, 159, 13, 0.45);
+}
+
+.card--played {
+    margin: 0 .5em;
+    grid-row: 1;
+    display: inline-block;
+    padding: 1em;
+    border-radius: 1em;
+    background-color: rgba(238, 159, 13, 0.45)
+}
+
+/* hand area */
+.card__bar--hand > * {
+    display: inline-block;
+}
+.card-bar__btn {
+    float: right;
+    padding: 1em;
+}
+.card-bar__title--hand {
+    grid-row: 1;
+    padding: 1em;
+    border-radius: 1em;
+    background-color: rgba(46, 255, 27, 0.3);
+}
+.card--hand {
+    margin: 0 .5em;
+    grid-row: 1;
+    display: inline-block;
+    padding: 1em;
+    border-radius: 1em;
+    background-color: rgba(46, 255, 27, 0.3)
+}
+
+/* deck */
+.player__deck-discard {
+    display: grid;
+    grid-auto-columns: min-content;
+    grid-template-rows: min-content;
+
+}
+.left, .right {
+    display: inline-block;
+    grid-row: 1;
+}
+.left {
+    margin-right: 1em;
+}
+
+.title--deck {
+    grid-row: 1;
+    padding: 1em;
+    border-radius: 1em;
+    background-color: rgba(255, 27, 27, 0.3);
+}
+.card--deck {
+    margin: 0 .5em;
+    grid-row: 1;
+    padding: 1em;
+    border-radius: 1em;
+    background-color: rgba(255, 27, 27, 0.3);
+}
+
+/* discard */
+
+.title--discard {
+    grid-row: 1;
+    padding: 1em;
+    border-radius: 1em;
+    background-color: rgba(255, 27, 27, 0.3);
+}
+.card--discard {
+    margin: 0 .5em;
+    grid-row: 1;
+    padding: 1em;
+    border-radius: 1em;
+    background-color: rgba(255, 27, 27, 0.3);
+}
+
+/* trash */
+
+.title--trash {
+    grid-row: 1;
+    padding: 1em;
+    border-radius: 1em;
+    background-color: rgba(46, 255, 27, 0.3);
+}
+
+.card--trash{
+    margin: 0 .5em;
+    grid-row: 1;
+    padding: 1em;
+    border-radius: 1em;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* global 'active' class */
+.active--trash > img {
+    box-shadow: 0 0 .5em .5em rgba(255, 0, 0, .6);
+}
+.active--trash:hover > img {
+    box-shadow: 0 0 .5em .5em rgba(255, 0, 0, 1);
+}
+
+.active--buy > img {
+    box-shadow: 0 0 .5em .5em rgba(71, 221, 11, 0.6);
+}
+
+.active--buy:hover > img {
+    box-shadow: 0 0 .5em .5em rgba(71, 221, 11, 1);
+}
+
+.active--action > img {
+    box-shadow: 0 0 .5em .5em rgba(0, 174, 255, 0.4);
+}
+
+.active--action:hover > img {
+    box-shadow: 0 0 .5em .5em rgba(0, 174, 255, 1);
 }
