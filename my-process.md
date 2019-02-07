@@ -40,3 +40,15 @@ One thing I forgot to mention-- I tried to implement a debug logger with a funct
 Also, I could no longer pass in items delimited with commas and have it spit them out.
 
 It turns out that console.log is actually pretty great. 
+
+## Day 3
+Spent all day trying to implement a UI. After several hours of mucking around I settled on making a global object named UI that will hold references to all the important DOM elements that I will use throughout the script.
+
+This allows me to write things like UI.hand.doSomething(). Cool!
+
+I also gave the Card class a render method. It takes three parameters, an HTML node that it will be rendered on, an id that will be set in the node's id property, and a state, to indicate whether it has been played or not, etc.
+
+Village is now implemented as well. It draws and increments actions.
+
+## Day 4
+As I kick off Domblenon this morning, it works pretty well. 
