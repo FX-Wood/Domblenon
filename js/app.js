@@ -62,15 +62,23 @@ document.addEventListener('DOMContentLoaded', function init() {
         UI.box = document.getElementById('app');
         UI.title = document.getElementById('title');
         UI.exit =  document.getElementById('exit');
+
         UI.supply = document.getElementById('supply');
         UI.basicSupply = document.getElementById('supply-basic');
         UI.kingdomSupply = document.getElementById('supply-kingdom');
+
+        UI.handBar
+        UI.handTitle = document.getElementById('hand-title');
         UI.btn = document.getElementById('ui-btn-0');
         UI.hand = document.getElementById('hand');
-        UI.played = document.getElementById('played')
-        UI.deck = document.getElementById('deck')
-        UI.hand = document.getElementById('hand')
-        UI.discard = document.getElementById('discard')
+
+
+        UI.played = document.getElementById('played');
+
+        UI.deckTitle = document.getElementById('deck-title')
+        UI.deck = document.getElementById('deck');
+
+        UI.discard = document.getElementById('discard');
     PLAYERS.forEach(player => {
         //player.name = prompt(`Player ${player.index}, what is your name?`)
         console.log(this)
@@ -130,6 +138,10 @@ const PLAY = {
     },
     victory: function(player) {
         // do nothing
+    },
+    chapel: function(player) {
+        // trash up to 4 cards
+        player.trashSelected(4, false, "Chapel") // upToN bool is true
     },
     smithy: function(player) {
         player.draw(3);
@@ -215,9 +227,8 @@ class Player {
         dlog(`makeDeck(${this.name})`);
         // makes a starter deck
         let deck = [];
-        deck.push(...makeCards(8, CARDS.Copper));
-        deck.push(...makeCards(0, CARDS.Estate));
-        deck.push(...makeCards(2, CARDS.Village))
+        deck.push(...makeCards(7, CARDS.Copper));
+        deck.push(...makeCards(3, CARDS.Estate));
         return this.deck = this.shuffle(deck, "starting-deck");
     }
     shuffle(cardsArr, nameStr) {
@@ -288,6 +299,12 @@ class Player {
         }
         player.uiHandRefresh()
         player.uiPlayedRefresh()
+    }
+    trashSelected(n, upToN, message) {
+
+        this.uiHandRefresh()
+        UI.hand.scrollIntoView(true, {behavior:smooth})
+
     }
     uiHandRefresh() {
         while(this.uiHand.firstChild) {

@@ -22,9 +22,11 @@
 
         <section class="player">
             <button id="ui-btn-0" class="player__btn">AUTOPLAY TREASURES</button>
-            <h3 class="title--played">Cards Played this turn</h3>
+            <h3 id="played-title" class="title--played">Cards Played this turn</h3>
             <div id="played" class="card__scroll"></div>
-            <h3 class="title--hand">Cards in hand</h3>
+            <div id="hand-bar" class="card__bar--hand">
+                <h3 id="hand-title" class="title--hand">Cards in hand</h3>
+            </div>
             <div id="hand" class="card__scroll"></div>
             
             <div id="deck-discard" class="player__deck-discard">

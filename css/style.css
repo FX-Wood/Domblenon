@@ -38,6 +38,10 @@ body {
 .head__title {
     display: inline-block;
 }
+.head__exit {
+    float: right;
+    padding: 1em;
+}
 .card__scroll {
     display: grid;
     grid-auto-columns: min-content;
@@ -107,13 +111,19 @@ body {
 }
 
 /* deck */
-.player__deck-discard * {
-    border: 1px solid red;
+.player__deck-discard {
+    display: grid;
+    grid-auto-columns: min-content;
+    grid-template-rows: min-content;
+
 }
 .left, .right {
     display: inline-block;
+    grid-row: 1;
 }
-
+.left {
+    margin-right: 1em;
+}
 
 .title--deck {
     grid-row: 1;
