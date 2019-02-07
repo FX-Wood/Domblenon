@@ -5,9 +5,7 @@ html, body {
     margin: 0;
     max-width: 100%;
 }
-body {
-    
-}
+
 /* Main grid setup */
 .app {
     margin: 1em;
@@ -95,7 +93,14 @@ body {
 }
 
 /* hand area */
-.title--hand {
+.card__bar--hand > * {
+    display: inline-block;
+}
+.card-bar__btn {
+    float: right;
+    padding: 1em;
+}
+.card-bar__title--hand {
     grid-row: 1;
     padding: 1em;
     border-radius: 1em;
@@ -164,3 +169,34 @@ body {
     background-color: rgba(46, 255, 27, 0.3);
 }
 
+.card--trash{
+    margin: 0 .5em;
+    grid-row: 1;
+    padding: 1em;
+    border-radius: 1em;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* global 'active' class */
+.active--trash > img {
+    box-shadow: 0 0 .5em .5em rgba(255, 0, 0, .6);
+}
+.active--trash:hover > img {
+    box-shadow: 0 0 .5em .5em rgba(255, 0, 0, 1);
+}
+
+.active--buy > img {
+    box-shadow: 0 0 .5em .5em rgba(71, 221, 11, 0.6);
+}
+
+.active--buy:hover > img {
+    box-shadow: 0 0 .5em .5em rgba(71, 221, 11, 1);
+}
+
+.active--action > img {
+    box-shadow: 0 0 .5em .5em rgba(0, 174, 255, 0.4);
+}
+
+.active--action:hover > img {
+    box-shadow: 0 0 .5em .5em rgba(0, 174, 255, 1);
+}
