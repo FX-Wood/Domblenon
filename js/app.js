@@ -1,7 +1,7 @@
 // GLOBALS
 const NUM_PLAYERS = 2 //parseInt(prompt("How many players?"));
 const PLAYERS = [];
-const SUPPLY = makeSupply();
+const SUPPLY = makeSupply(NUM_PLAYERS);
 var TURN = 0;
 var PHASE = null;
 var DONE = false;
@@ -99,10 +99,10 @@ const UI = {
     renderDeck: function() {
         console.log('Rendering deck', PLAYERS[TURN].name, PLAYERS[TURN].deck.length)
         UI.clear(UI.deck);
-        if (PLAYERS[TURN].deck) {
+        if (PLAYERS[TURN].deck.length > 0) {
             new Card(...CARDS["CardBack"]).render(UI.deck, "CardBack", "deck")
         } else {
-            new Card(...CARDS["Empty"]).render(UI.deck, "Empty", "empty")
+            new Card(...CARDS["Empty"]).render(UI.deck, "Empty", "deck")
         }
     },
     renderDiscard() {
@@ -566,21 +566,6 @@ console.log(`PLAYERS: ${PLAYERS.map(player => {return 'player 0: ' + player.name
 console.log(`SUPPLY: ${Object.keys(SUPPLY).reduce((acc, key) => {return acc.concat(Object.entries(SUPPLY[key]).map(entry => entry.reduce((acc, next)=> {return next + ' ' + acc})))}, [])}`)
 for (let i = 0; i < NUM_PLAYERS; i++) {
     PLAYERS.push(new Player(i));
-}
-function makeSupply() {
-    switch(NUM_PLAYERS) {
-        case 2:
-            let supply = {
-                basic: {Copper: 106, Silver: 80, Gold: 60, Estate: 8, Duchy: 8, Province: 8, Curse: 10},
-                kingdom: {Chapel: 10, Gardens: 10, Smithy: 10, Village: 10, Witch: 10},
-                trash: []
-            }
-            console.log('making supply', supply)
-            return supply;
-        case 3:
-            alert('3-player support coming soon. Try 2 players.')
-            break;
-    }
 }
 
 
