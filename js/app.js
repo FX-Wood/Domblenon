@@ -1,10 +1,3 @@
-// toggle for debug messages
-var DEBUG = true;
-function dlog(message) {
-    if (DEBUG) {
-        console.log(message);
-    }
-}
 // GLOBALS
 const NUM_PLAYERS = 2 //parseInt(prompt("How many players?"));
 const PLAYERS = [];
@@ -29,7 +22,7 @@ const UI = {
         let uiKingdom = UI.clear(UI.kingdomSupply);
         for (supplyType in SUPPLY) {
             for (stack in SUPPLY[supplyType]) {
-                if (stack && supplyType !== "trash") {
+                if (SUPPLY[supplyType][stack] && supplyType !== "trash") {
                     let card = new Card(...CARDS[stack]);
                     let renderStyle = PHASE === "buy"? "supply active--buy" : "supply";
                     let renderHook = supplyType === "basic"? uiBasic : uiKingdom
@@ -42,9 +35,10 @@ const UI = {
                             UI.renderSupply() 
                         }
                     })
-                } else if (supplyType !== "trash" && !stack) {
+                } else if (supplyType !== "trash") {
                     console.log(stack + " is out!")
-                    let card = new Card(...CARDS["Empty"]).render(supplyType === "basic"? uiBasic : uiKingdom, card.name, "Empty")
+                    let card = new Card(...CARDS["Empty"]);
+                    card.render(supplyType === "basic"? uiBasic : uiKingdom, card.name, "supply");
                 }
             }
         }
@@ -58,12 +52,48 @@ const UI = {
             card.render(UI.played, id, "played")
         },this);
     },
+    renderHandBar() {
+        console.log('rendering hand bar')
+        UI.clear(UI.handBar)
+        // title
+        let title = document.createElement('h3');
+        title.id = "hand-title";
+        title.className = "card-bar__title--hand";
+        title.textContent = "Cards in hand";
+        UI.handBar.appendChild(title)
+        // autoplay treasures button
+        // scroll to top button 
+        let btn = document.createElement('button')
+        UI.handBarBtn = btn;
+        btn.id = "hand-btn"
+        btn.className = "card-bar__btn"
+        btn.textContent = "SCROLL TO TOP";
+        
+        UI.handBar.appendChild(btn)
+        btn.addEventListener('click', e => {
+            UI.title.scrollIntoView({behavior: "smooth", block: "center"})
+        })
+        if (PHASE === "buy") {
+            let autoPlayBtn = document.createElement('button');
+            autoPlayBtn.textContent = 'AUTOPLAY TREASURES';
+            autoPlayBtn.className = "card-bar__btn";
+            UI.handBar.appendChild(autoPlayBtn);
+            autoPlayBtn.addEventListener('click', e => {
+                if (PLAYERS[TURN].autoPlayTreasures()) {
+                    UI.supply.scrollIntoView({behavior: "smooth", block: "start"})
+                    UI.renderPlayed()
+                    UI.renderHand()
+                }
+            });
+        }
+    },
     renderHand(style) {
         console.log('Rendering hand', PLAYERS[TURN].name, PLAYERS[TURN].hand)
         UI.clear(UI.hand)
+
         PLAYERS[TURN].hand.forEach((card, id) => {
             let cardNode = card.render(UI.hand, id, "hand " + style)
-            cardNode.addEventListener('click', UI.playListener, {once: true}) 
+            cardNode.addEventListener('click', UI.playListener) 
         }, this);
     },
     renderDeck: function() {
@@ -187,7 +217,6 @@ document.addEventListener('DOMContentLoaded', function init() {
         UI.trash = document.getElementById('trash')
     PLAYERS.forEach(player => {
         // player.name = prompt(`Player ${player.index}, what is your name?`)
-        console.log(this)
         PLAYERS[0].name = "FX";
         PLAYERS[1].name = "AI";
         player.makeStartingDeck();
@@ -210,7 +239,6 @@ class Card {
         this.play = playMethod;
         this.ui;
         this.uiState;
-        // dlog(`Card(${name})`);
     }
 
     render(hook, id, state) {
@@ -285,7 +313,7 @@ const CARDS = {
 
 // makes 0 to n cards, takes n and an array of arguments for the card constructor
 function makeCards(n, card) {
-    dlog(`makeCards(${n}, ${card[0]})`);
+    console.log(`makeCards(${n}, ${card[0]})`);
     let output = [];
     for (n; n > 0; n--) {
         output.push(new Card(...card));
@@ -298,7 +326,7 @@ function makeCards(n, card) {
 // TODO: implement shuffling in place with Fisher-Yates or equivalent.
 // TODO: implement using better RNG
 function gShuffle(cardsArr, nameStr) {
-    dlog(`global.shuffle(${nameStr ? nameStr : "cards" })`);
+    console.log(`global.shuffle(${nameStr ? nameStr : "cards" })`);
     let shuffled = [];
     while (cardsArr.length > 0) {
         shuffled.push(cardsArr.splice(Math.floor(Math.random() * cardsArr.length), 1)[0]); // remember to de-reference splice
@@ -322,11 +350,9 @@ class Player {
         this.uiHand = document.getElementById('hand')
         this.uiPlayed = document.getElementById('played')
         this.uiButton = document.getElementById('exit')
-
-        dlog(`Player(${index})`);
     }
     makeStartingDeck() {
-        dlog(`makeDeck(${this.name})`);
+        console.log(`making ${this.name}'s deck`);
         // makes a starter deck
         let deck = [];
         deck.push(...makeCards(7, CARDS.Copper));
@@ -334,7 +360,7 @@ class Player {
         return this.deck = this.shuffle(deck, "starting-deck");
     }
     shuffle(cardsArr, nameStr) {
-        dlog(`${this.name}.shuffle(${this.name}.${nameStr ? nameStr : "cards" })`);
+        // console.log(`${this.name}.shuffle(${this.name}.${nameStr ? nameStr : "cards" })`);
         let shuffled = [];
         while (cardsArr.length > 0) {
             shuffled.push(cardsArr.splice(Math.floor(Math.random() * cardsArr.length), 1)[0]); // remember to de-reference splice
@@ -342,10 +368,10 @@ class Player {
         return shuffled;
     }
     draw(n) {
-        dlog(`draw(${n}) from ${this.deck}`)
+        console.log(`${this.name} drew ${n} from ${this.name}'s deck`)
         while (n > 0) {
             if (this.deck.length > 0) { // if you can, draw
-                dlog(`drew ${this.deck[this.deck.length-1].name}`)
+                console.log(`drew ${this.deck[this.deck.length-1].name}`)
                 this.hand.push(this.deck.pop()) 
             } else if (this.discard.length > 0) { // if you need to shuffle, shuffle
                 console.log('shuffling your deck, hang on.', this.discard.length, 'cards in discard pile')
@@ -355,7 +381,7 @@ class Player {
                 this.hand.push(this.deck.pop()) 
             }
             if (!this.deck && !this.discard) { // if you are out of cards, don't draw
-                dlog(`out of cards`)
+                console.log(`out of cards`)
                 break;
             }
             n--
@@ -363,19 +389,34 @@ class Player {
         UI.renderDeck()
     }
     gain(cardName) {
-        for (let type in SUPPLY) {
-                if (SUPPLY[type][cardName]) {                                       // if there is one left
-                    SUPPLY[type][cardName]--;                                       // remove it from the supply
-                    this.discard.push(new Card(...(CARDS[cardName])));              // add it to current player's discard pile
-                }
+        console.log(`gaining ${cardName}`);
+            let type = SUPPLY.basic[cardName]? "basic" : "kingdom";
+            if (SUPPLY[type][cardName]) {                                       // if there is one left
+                SUPPLY[type][cardName]--;                                       // remove it from the supply
+                this.discard.push(new Card(...(CARDS[cardName])));              // add it to current player's discard pile
+                return true;
             }
+        console.log(`no ${cardName} in supply`)
+        return false;
         }
     autoPlayTreasures() {
-        for(let i = 0; i < this.hand.length; i++) {
-            if (this.hand[i].type === "Treasure") {
-                this.hand[i].play(i--)
-                console.log('Playing treasure')
+        console.log('autoplaying treasure');
+        let player = PLAYERS[TURN];
+        if (PHASE === 'buy') {
+            let count = 0;
+            for(let i = 0; i < player.hand.length; i++) {
+                if (player.hand[i].type === "Treasure") {
+                    if (player.playTreasure(i)) {
+                        i--
+                        count++
+                    }
+                }
             }
+            console.log(`You played ${count || "no"} treasures`)
+            return count? true : false
+        } else {
+            console.log('not in buy phase');
+            return false;
         }
     }
     buy(cardName) {
@@ -406,14 +447,18 @@ class Player {
     playAction(i) {
         console.log(`playing ${this.hand[i].name}`)
         if (PHASE === "action") {
-            if (this.actions) {
-                this.hand[i].play(this)
-                this.played.push(this.hand.splice(i, 1)[0])
-                this.actions--
-                console.log('success!')
-                return true
+            if (this.hand[i].type.includes("Action")) {
+                if (this.actions) {
+                    this.hand[i].play(this)
+                    this.played.push(this.hand.splice(i, 1)[0])
+                    this.actions--
+                    console.log('success!')
+                    return true
+                } else {
+                    console.log('not enough actions')
+                }
             } else {
-                console.log('not enough actions')
+                console.log('not an action card')
             }
         } else {
             console.log('not action phase')
@@ -423,10 +468,14 @@ class Player {
     playTreasure(i) {
         console.log(`playing ${this.hand[i].name}`)
         if (PHASE === "buy") {
-            this.hand[i].play(this)
-            this.played.push(this.hand.splice(i, 1)[0])
-            console.log('success!')
-            return true
+            if (this.hand[i].type.includes("Treasure")) {
+                this.hand[i].play(this)
+                this.played.push(this.hand.splice(i, 1)[0])
+                console.log('success!')
+                return true
+            } else {
+                console.log("not a treasure card")
+            }
         } else {
             console.log('not in buy phase')
         }
@@ -444,12 +493,16 @@ class Player {
         return false
     }
     actionPhase() {
+        UI.renderHandBar()
         if (PHASE !== 'action') { // if switching phases
-            dlog(`starting ${this.name}'s action phase`)
+            console.log(`starting ${this.name}'s action phase`)
             PHASE = 'action';
             UI.renderTitle()
             UI.exit.textContent = 'DONE WITH ACTION PHASE'
-            UI.exit.addEventListener('click',e => {this.buyPhase()}, {once: true})
+            UI.exit.addEventListener('click',e => {
+                this.buyPhase();
+                UI.hand.scrollIntoView({behavior: "smooth", block: "center"})
+            }, {once: true})
             UI.renderHand("active--action");
             UI.renderSupply()
         } else {                // if returning to action phase
@@ -458,9 +511,10 @@ class Player {
         }
     }
     buyPhase() {
+        console.log(`${PHASE === 'buy'? "returning to" : ''} ${this.name}'s buy phase`)
         if (PHASE !== 'buy') {
-            dlog(`${this.name}'s buy phase`)
             PHASE = 'buy';
+            UI.renderHandBar()
             UI.renderTitle()
             UI.exit.addEventListener('click', e => {this.cleanupPhase()}, {once: true});
             UI.exit.textContent = "DONE WITH BUY PHASE";
@@ -470,7 +524,8 @@ class Player {
         }
     }
     cleanupPhase() {
-        dlog(`Cleaning up ${this.name}'s turn`)
+        UI.renderHandBar()
+        console.log(`Cleaning up ${this.name}'s turn`)
         // cleanup
         PHASE = 'cleanup';
         UI.renderTitle()
@@ -483,9 +538,10 @@ class Player {
         this.played = [];                                               // empty played cards
         this.discard = this.discard.concat(this.hand.splice(0));        // cards remaining in hand to discard
         this.hand = [];                                                 // empty hand
-        TURN = ++TURN % NUM_PLAYERS                 // increment turn, mod by number of players to keep within bounds of player array
         this.draw(5)                                // draw up to five cards
-        dlog(`end of ${this.name}'s turn`)
+        this.treasure = 0;
+        TURN = ++TURN % NUM_PLAYERS                 // increment turn, mod by number of players to keep within bounds of player array
+        console.log(`end of ${this.name}'s turn`)
         if (gameOver()) {
             scoreGame()
         } else {
@@ -493,7 +549,8 @@ class Player {
         }
     }
     startTurn() {
-        dlog(`starting ${this.name}'s turn`);
+        UI.renderHandBar()
+        console.log(`starting ${this.name}'s turn`);
         alert('it\'s your turn ' + this.name )
         this.buys = 1;          // reset buys
         this.actions = 1;       // reset actions
@@ -504,14 +561,13 @@ class Player {
 }
 
 
-dlog(`NUM_PLAYERS: ${NUM_PLAYERS}`);
-dlog(`PLAYERS: ${PLAYERS.map(player => {return 'player 0: ' + player.name})}`);
-dlog(`SUPPLY: ${Object.keys(SUPPLY).reduce((acc, key) => {return acc.concat(Object.entries(SUPPLY[key]).map(entry => entry.reduce((acc, next)=> {return next + ' ' + acc})))}, [])}`)
+console.log(`NUM_PLAYERS: ${NUM_PLAYERS}`);
+console.log(`PLAYERS: ${PLAYERS.map(player => {return 'player 0: ' + player.name})}`);
+console.log(`SUPPLY: ${Object.keys(SUPPLY).reduce((acc, key) => {return acc.concat(Object.entries(SUPPLY[key]).map(entry => entry.reduce((acc, next)=> {return next + ' ' + acc})))}, [])}`)
 for (let i = 0; i < NUM_PLAYERS; i++) {
     PLAYERS.push(new Player(i));
 }
 function makeSupply() {
-    // dlog(`makeSupply(${NUM_PLAYERS})`)
     switch(NUM_PLAYERS) {
         case 2:
             let supply = {
@@ -519,6 +575,7 @@ function makeSupply() {
                 kingdom: {Chapel: 10, Gardens: 10, Smithy: 10, Village: 10, Witch: 10},
                 trash: []
             }
+            console.log('making supply', supply)
             return supply;
         case 3:
             alert('3-player support coming soon. Try 2 players.')
@@ -535,7 +592,7 @@ function gameOver() {
             for (let card in SUPPLY[type]) {
                 // console.log("card: ", card, "type: ", SUPPLY[type])
                 if (type !== "trash" && !SUPPLY[type][card]){
-                    dlog(`the ${SUPPLY[type][card]} pile is empty. `)
+                    console.log(`the ${SUPPLY[type][card]} pile is empty. `)
                     count++
                     if (NUM_PLAYERS < 5 && count > 2) {
                         return true
