@@ -55,15 +55,15 @@ As I kick off Domblenon this morning, it works pretty well.
 
 ## Day 5
 As the game is functioning for the most part, I have a few feature options to pursue:
-  + Implement more kingdom cards
+  1. Implement more kingdom cards
     * easy: Laboratory, Festival, Market
     * medium: Moneylender, Remodel, Mine, Workshop, Poacher
     * hard: Council Room, Cellar, Vassal, Harbinger, Thief
     * mission: impossible: Throne room, Library, Moat, Militia, Sentry
-  + Set up continuous integration
-  + Set up some tests
-  + Make user's hand display in a fan
-  + Work on open issues:
+  2. Set up continuous integration
+  3. Set up some tests
+  4. Make user's hand display in a fan
+  5. Work on open issues:
     + Action click listener is attached to card border, not img
     + card__scroll class is not scrolling as expected
   
