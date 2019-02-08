@@ -52,3 +52,25 @@ Village is now implemented as well. It draws and increments actions.
 
 ## Day 4
 As I kick off Domblenon this morning, it works pretty well. 
+
+## Day 5
+As the game is functioning for the most part, I have a few feature options to pursue:
+  + Implement more kingdom cards
+    1. easy: Laboratory, Festival, Market
+    2. medium: Moneylender, Remodel, Mine, Workshop, Poacher
+    3. hard: Council Room, Cellar, Vassal, Harbinger, Thief
+    4. mission: impossible
+      + Throne room
+      + Library
+      + Moat
+      + Militia
+      + Sentry
+  + Set up continuous integration
+  + Set up some tests
+  + Make user's hand display in a fan
+  + Work on open issues:
+    + Action click listener is attached to card border, not img
+    + card__scroll class is not scrolling as expected
+  
+      
+    
