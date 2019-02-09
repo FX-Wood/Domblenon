@@ -270,8 +270,8 @@ document.addEventListener('DOMContentLoaded', function init() {
         UI.trash = document.getElementById('trash')
     PLAYERS.forEach(player => {
         // player.name = prompt(`Player ${player.index}, what is your name?`)
-        PLAYERS[0].name = "FX";
-        PLAYERS[1].name = "AI";
+        PLAYERS[0].name = "ME";
+        PLAYERS[1].name = "ME2";
         player.makeStartingDeck();
         player.draw(5)
     })
@@ -639,8 +639,8 @@ function scoreGame() {
     alert('the player with the highest score was: ' + highest.name + ' with a score of ' + highest.score + '. Congratulations! Good game, and thank you for playing.')
     return highest
 };
-var f = PLAYERS[0];
-var a = PLAYERS[1];
+var me1 = PLAYERS[0];
+var me2 = PLAYERS[1];
 var s = SUPPLY
 
 // // 2 players  8 victory, 10 curse 
