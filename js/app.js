@@ -19,26 +19,33 @@ const UI = {
             UI.hand.scrollIntoView({behavior: "smooth", block: "center", inline: "start"})
         })
     },
-    renderSupply: function() {
-        console.log('Rendering supply', SUPPLY)
+    renderSupply: function(style, filter, clickHandler=UI.buyListener) {
+        console.log('rendering supply', SUPPLY)
+        if (typeof filter === 'undefined' && PHASE === 'buy') {
+            style = "active--buy";
+            filter = function(card) {
+                if (PLAYERS[TURN].treasure >= card.cost) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        } else if (typeof filter === 'undefined') {
+            filter = function(card) {return false}
+        }
         let uiBasic = UI.clear(UI.basicSupply);
         let uiKingdom = UI.clear(UI.kingdomSupply);
         for (supplyType in SUPPLY) {
             for (stack in SUPPLY[supplyType]) {
                 if (SUPPLY[supplyType][stack] && supplyType !== "trash") {
                     let card = new Card(...CARDS[stack]);
-                    let renderStyle = PHASE === "buy"? "supply active--buy" : "supply";
-                    let renderHook = supplyType === "basic"? uiBasic : uiKingdom
-                    card.render(renderHook, card.name, renderStyle)
-                    .addEventListener('click', e => {
-                        console.log('trying to buy', e.target);
-                        if (PLAYERS[TURN].buy(card.name)) {
-                            UI.discard.scrollIntoView({behavior: "smooth", block: "end", inline: "start"});
-                            UI.renderHandBar();
-                            UI.renderDiscard();
-                            UI.renderSupply();
-                        }
-                    })
+                    let renderHook = supplyType === "basic" ? uiBasic : uiKingdom;
+                    if (filter(card)) {
+                        card.render(renderHook, card.name, "supply " + style)
+                        .addEventListener('click', clickHandler)
+                    } else {
+                        card.render(renderHook, card.name, "supply")
+                    }
                 } else if (supplyType !== "trash") {
                     console.log(stack + " is out!");
                     let card = new Card(...CARDS["Empty"]);
@@ -57,8 +64,8 @@ const UI = {
         },this);
     },
     renderHandBar() {
+        console.log('rendering handBar')
         let p = PLAYERS[TURN];
-        console.log('rendering hand bar');
         UI.clear(UI.handBar.container);
         // title
         let title = document.createElement('h3');
@@ -81,8 +88,8 @@ const UI = {
         funcBtn.className = "card-bar__btn";
         funcBtn.textContent = "AUTOPLAY TREASURE";
         funcBtn.setAttribute("disabled", "disabled");
-        UI.handBar.funcBtn = funcBtn;
         UI.handBar.container.appendChild(funcBtn);
+        UI.handBar.funcBtn = funcBtn;
         if (PHASE === "buy") {
             funcBtn.removeAttribute("disabled");
             funcBtn.addEventListener('click', e => {
@@ -90,6 +97,7 @@ const UI = {
                     UI.supply.scrollIntoView({behavior: "smooth", block: "start", inline: "start"})
                     UI.renderPlayed()
                     UI.renderHand()
+                    UI.renderSupply()
                 }
             });
         }
@@ -170,6 +178,7 @@ const UI = {
                 break;
             case "buy":
                 success = player.playTreasure(e.target.id)
+                if (success) {UI.renderSupply()}
                 break;
         }
         if (success) {
@@ -178,13 +187,48 @@ const UI = {
             UI.renderPlayed()
         }
     },
-    supplySelector: function(cardName, n, upToN, filter, result, player=PLAYERS[TURN]) {
-
+    buyListener(e) {
+        console.log('trying to buy', e.target);
+        if (PLAYERS[TURN].buy(e.target.id)) {
+            UI.discard.scrollIntoView({behavior: "smooth", block: "end", inline: "start"});
+            UI.renderHandBar();
+            UI.renderDiscard();
+            UI.renderSupply();
+        }
     },
-    trashSelector: function(cardName, n, upToN, filter, result, player=PLAYERS[TURN], where="hand") {
+
+    gainSelector: function(n, cancelable, message, filter, result, player=PLAYERS[TURN]) {
+        console.log('starting gain selection')
+        if (typeof filter === 'undefined') {filter = function(card) {return true}};
+        setTimeout(function() {
+            UI.exit.setAttribute('disabled', 'disabled')
+            UI.handBar.title.textContent = "Cards in Hand: " + message;
+// TODO: implement check to see if possible
+            UI.renderSupply("active--buy", filter, e => {
+                if (player.gain(e.target.id)) {
+                    UI.renderDiscard()
+                    UI.discard.scrollIntoView({behavior: "smooth", block: "end", inline: "start"});
+                    n--
+                    if (n > 0) {
+// TODO: implement gaining more than one card
+                    } else {
+                        UI.supply.title.textContent = "Supply"
+                        UI.exit.removeAttribute('disabled')
+                        UI.renderSupply()
+                        UI.renderHandBar()
+                        UI.renderHand()
+
+                    }
+                }
+            })
+            UI.supplyBar.title.textContent = "Supply " + message;
+        }, 1)
+    },
+    trashSelector: function(cardName, n, cancelable, filter, result, player=PLAYERS[TURN], where="hand") {
+        console.log('starting trash selection')
         // cardName: (str) the triggering card or event
         // n: (int) number to trash,
-        // upToN: (bool) true =>'trash up to n cards' false => 'trash n cards, 
+        // cancelable: (bool) true =>'trash up to n cards' false => 'trash n cards, 
         // filter: (function) callback that takes one card arg and returns true or false. Defaults to true, which is all cards in selected pool.
         // result: (function) callback to execute if trash is successful.
         // player: (Player object) the selecting player. defaults to current player.
@@ -192,29 +236,29 @@ const UI = {
         if (typeof filter === 'undefined') {filter = function(card) {return true}}
         if (where === "hand") {
             console.log('in hand')
-            UI.handBar.title.textContent = `Cards in hand: trash ${upToN ? "up to ": "no fewer than"}${n} cards. (${cardName})`
-            UI.handBar.funcBtn.textContent = "EXIT " + cardName.toUpperCase() + " TRASH SELECTION";
-            UI.handBar.funcBtn.setAttribute('disabled', 'disabled');
+            UI.handBar.title.textContent = `Cards in hand: trash ${cancelable ? "up to ": "no fewer than"}${n} cards. (${cardName})`
             UI.exit.setAttribute('disabled', 'disabled');
+            UI.handBar.funcBtn.textContent = "EXIT " + cardName.toUpperCase() + " TRASH SELECTION";
             setTimeout(function() { // need to set a timeout because on a successfully played card the UI will refresh, removing trash listener and styles
-                if (!n | upToN) {
-                    console.log('in block0')
-                    UI.handBar.funcBtn.removeAttribute('disabled')
-                    UI.handBar.funcBtn.addEventListener('click', e => {
-                        console.log('click', e.target)
-                        UI.exit.removeAttribute('disabled');
-                        UI.renderHandBar()
-                        UI.renderHand()
-                    });
-                }
                 // if the trash is not optional, we need to make sure we don't trap the user if they have no viable trash, 
                 // e.g. if their hand is empty
-                if (!upToN) {
-                    console.log('in block1')
+                UI.handBar.funcBtn.setAttribute('disabled', 'disabled');
+                UI.handBar.funcBtn.addEventListener('click', e => {
+                    console.log('click', e.target)
+                    UI.renderHandBar()
+                    UI.renderHand()
+                });
+                if (!n | cancelable) {
+                    console.log('this trash selection is cancelable. enabling exit buttons')
+                    UI.exit.removeAttribute('disabled');
+                    UI.handBar.funcBtn.removeAttribute('disabled')
+                }
+                if (!cancelable) {
+                    console.log('checking to see if trash is possible')
                     let filterFail = true;
                     player.hand.forEach(card => {
                         if (filter(card)) {
-                            console.log(card, 'failed trash filter')
+                            console.log(card, 'passed trash filter')
                             filterFail = false;
                         }
                     });
@@ -225,17 +269,22 @@ const UI = {
                     }
                 }
                 UI.renderHand("active--trash", filter, function(e) {
-                    let trashSuccess = player.trashCard(e.target.id)
+                    let trashCost = player.hand[e.target.id].cost;
+                    let trashSuccess = player.trashCard(e.target.id);
+                    console.log({trashSuccess, trashCost})
                     if (typeof result !== 'undefined') {
-                        result(trashSuccess);
+                        result(trashSuccess, trashCost);
                     }
                     if (trashSuccess) {
                         n--;
                         if (n > 0) {
                             console.log(this)
-                            console.log(cardName, n, upToN, filter, result, player, where)
-                            UI.trashSelector(cardName, n, upToN, filter, result, player, where)
+                            console.log(cardName, n, cancelable, filter, result, player, where)
+                            UI.trashSelector(cardName, n, cancelable, filter, result, player, where)
                         } else {
+                            console.log('exiting trash selection')
+                            console.log(UI.handBar.funcBtn)
+                            UI.handBar.funcBtn.removeAttribute('disabled')
                             UI.handBar.funcBtn.click();
                         } 
                     }
@@ -253,6 +302,9 @@ document.addEventListener('DOMContentLoaded', function init() {
         UI.supply = document.getElementById('supply');
         UI.basicSupply = document.getElementById('supply-basic');
         UI.kingdomSupply = document.getElementById('supply-kingdom');
+        UI.supplyBar = {
+            title: document.getElementById('supply-title')
+        }
 
         UI.hand = document.getElementById('hand');
         UI.handBar = {
@@ -376,7 +428,7 @@ class Player {
         while (n > 0) {
             if (this.deck.length > 0) { // if you can, draw
                 console.log(`drew ${this.deck[this.deck.length-1].name}`)
-                this.hand.push(this.deck.pop()) 
+                this.hand.unshift(this.deck.pop()) 
             } else if (this.discard.length > 0) { // if you need to shuffle, shuffle
                 console.log('shuffling your deck, hang on.', this.discard.length, 'cards in discard pile')
 
@@ -435,11 +487,15 @@ class Player {
             if (SUPPLY.basic[cardName] || SUPPLY.kingdom[cardName]) {
                 if (this.buys > 0) {  // if you have enough treasure and enough buys:
                     if (this.treasure >= card.cost) {
-                        console.log(`you purchased ${cardName} and have ${this.treasure} treasure and ${this.buys} buys remaining`)
-                        this.treasure -= card.cost;                     // pay the cost of the card
-                        this.buys--;                                    // decrement the number of buys you have
-                        this.gain(cardName);                            // gain the card
-                        return true
+                        if (this.gain(cardName)) {
+                            console.log(`you purchased ${cardName} and have ${this.treasure} treasure and ${this.buys} buys remaining`)
+                            this.treasure -= card.cost;                     // pay the cost of the card
+                            this.buys--;                                    // decrement the number of buys you have
+                            ;                            // gain the card
+                            return true
+                        } else {
+                            console.log('buy error: gain failed')
+                        }
                     } else {
                         console.log('not enough treasure')
                     }
@@ -528,6 +584,7 @@ class Player {
             PHASE = 'buy';
             UI.renderHandBar()
             UI.renderTitle()
+            UI.renderHand()
             UI.exit.addEventListener('click', e => {this.cleanupPhase()}, {once: true});
             UI.exit.textContent = "DONE WITH BUY PHASE";
             UI.renderSupply()

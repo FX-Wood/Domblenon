@@ -12,7 +12,7 @@ const PLAY = {
     festival: function(player) {
         player.actions += 2;
         player.buys++;
-        player.treasure++;
+        player.treasure += 2;
     },
     laboratory: function(player) {
         player.draw(2);
@@ -26,22 +26,42 @@ const PLAY = {
     },
     moneylender: function(player) {
         console.log('PLAY.moneylender')
-        UI.trashSelector("Moneylender"
-            , 1 // n of cards to trash
-            , true // optional?
-            , function(card) { // only coppers may be trashed
-                
+        UI.trashSelector("Moneylender", 1, true // name, 1 to trash, cancelable = true
+            , function moneylenderFilter(card) {
                 if (card.name === "Copper") {
                     return true
                 } else {
                     return false
                 }
             }
-            , function(trashSuccess) {
+            , function moneylenderResult(trashSuccess) {
                 if (trashSuccess) {
                     PLAYERS[TURN].treasure += 3;
                 }
             }
+        )
+    },
+    remodel: function(player) {
+        UI.trashSelector("Remodel", 1, false // name, 1 to trash, cancelable = false
+        , undefined   // filter is set to any card
+        , function remodelResult(trashSuccess, trashCost) { // result
+            UI.gainSelector(1, false
+                , `gain a card costing up to ${trashCost + 2} (Remodel)` 
+                , function remodelGainFilter(card) {
+                    // console.log("running remodel Gain Filter")
+                    // console.log("cost", card.cost, "trashed+2", trashCost)
+                    if (card.cost <= trashCost + 2) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+                , function(gainSuccess) {
+                    console.log('Congrats! you gained a card with remodel')
+                }
+
+                )
+        }
         )
     },
     smithy: function(player) {

@@ -29,6 +29,9 @@ html, body {
 }
 /* End of main grid setup */
 /* Global classes */
+.card-bar__title {
+    display: inline-block;
+}
 .card-bar__btn {
     float: right;
     padding: 1em;
@@ -56,12 +59,11 @@ html, body {
 .card__img {
     max-height: 18em;
 }
-.head__title {
-    display: inline-block;
-}
+
+
 /* supply area */
 
-.title--supply {
+.card-bar__title--supply {
     grid-row: 1;
     padding: 1em;
     border-radius: 1em;
@@ -201,7 +203,7 @@ html, body {
     box-shadow: 0 0 .5em .5em rgba(0, 174, 255, 1);
 }
 
-.active--treasure {
+.active--treasure > img {
     box-shadow: 0 0 .5em .5em rgba(255, 238, 0, 0.6);
 }
 
