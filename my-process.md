@@ -83,3 +83,20 @@ In implementing moneylender, I've settled on a plan to generalize a UI trash sel
 
 Hopefully by constructing this function I can apply the same structure to other selectors. Having a generalized function for this would be really useful.
     
+## Day 6
+Game is stable, as far as I can tell. No errors in limited testing. All cards seem to behave as expected.
+Missions for today:
+  1. make one test
+  2. implement 'Remodel'
+  3. use remodel as template for supplySelector
+  4. Using supply selector, implement:
+     - implement 'Artisan'
+     - implement 'Workshop'
+     - implement 'Mine'
+  5. implement 'Council Room'
+  6. implement 'Throne Room'
+  7. if there is time:
+     - implement 'Sentry'
+
+Tomorrow I will double-check requirements and start work on the presentation for Monday.
+
