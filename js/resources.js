@@ -26,15 +26,15 @@ const PLAY = {
     },
     moneylender: function(player) {
         console.log('PLAY.moneylender')
-        UI.trashSelector("Moneylender", 1, true
-            , function(card) {
+        UI.trashSelector("Moneylender", 1, true // name, 1 to trash, cancelable = true
+            , function moneylenderFilter(card) {
                 if (card.name === "Copper") {
                     return true
                 } else {
                     return false
                 }
             }
-            , function(trashSuccess) {
+            , function moneylenderResult(trashSuccess) {
                 if (trashSuccess) {
                     PLAYERS[TURN].treasure += 3;
                 }
@@ -42,8 +42,26 @@ const PLAY = {
         )
     },
     remodel: function(player) {
-        trashSelector("Remodel", 1, false
-        , function
+        UI.trashSelector("Remodel", 1, false // name, 1 to trash, cancelable = false
+        , undefined   // filter is set to any card
+        , function remodelResult(trashSuccess, trashCost) { // result
+            UI.gainSelector(1, false
+                , `gain a card costing up to ${trashCost + 2} (Remodel)` 
+                , function remodelGainFilter(card) {
+                    // console.log("running remodel Gain Filter")
+                    // console.log("cost", card.cost, "trashed+2", trashCost)
+                    if (card.cost <= trashCost + 2) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+                , function(gainSuccess) {
+                    console.log('Congrats! you gained a card with remodel')
+                }
+
+                )
+        }
         )
     },
     smithy: function(player) {
