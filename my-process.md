@@ -66,6 +66,20 @@ As the game is functioning for the most part, I have a few feature options to pu
   5. Work on open issues:
      + Action click listener is attached to card border, not img
      + card__scroll class is not scrolling as expected
-  
-      
+
+Afternoon update:
+  Implemented Lab, Festival, Market, and Moneylender.
+  Made a test for makeSupply function
+  Published site on github pages
+  Corrected action card click listener
+
+In implementing moneylender, I've settled on a plan to generalize a UI trash selector function. It will have several parameters:
+  0. Player who is trashing
+  1. Area to select from
+  2. Name of card that is trashing
+  3. Filter for which cards may be selected
+  4. Whether or not it's optional
+  5. function to carry out depending on the result
+
+Hopefully by constructing this function I can apply the same structure to other selectors. Having a generalized function for this would be really useful.
     
