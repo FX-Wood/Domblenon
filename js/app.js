@@ -104,7 +104,7 @@ const UI = {
             if (typeof filter === 'undefined') {
                 filter = function(card) {
                     if (card.type.includes("Treasure")){
-                        console.log('default filter: treasure', card);
+                        //console.log('default filter: treasure', card);
                         return true;
                     }
                     return false;
@@ -116,7 +116,7 @@ const UI = {
             if (typeof filter === 'undefined') {
                 filter = function(card) {
                     if (card.type.includes("Action")) {
-                        console.log('default filter: action', card)
+                        //console.log('default filter: action', card)
                         return true
                     }
                     return false;
@@ -127,7 +127,7 @@ const UI = {
         PLAYERS[TURN].hand.forEach((card, id) => {
             //console.log(filter(card), filter(card) ? "hand" + style : "hand")
             let cardNode = card.render(UI.hand, id, filter(card) ? "hand " + style : "hand")
-            console.log('filter: ', filter(card), card)
+            //console.log('filter: ', filter(card), card)
             if (filter(card)) {
                 cardNode.firstChild.addEventListener('click', clickHandler) 
             }
@@ -221,6 +221,7 @@ const UI = {
                     if (filterFail) {
                         UI.handBarBtn.removeAttribute('disabled')
                         console.log('canceling trash selection, no viable trash')
+                        UI.handBarBtn.click();
                     }
                 }
                 UI.renderHand("active--trash", filter, function(e) {
