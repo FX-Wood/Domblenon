@@ -212,10 +212,12 @@ const UI = {
                     if (n > 0) {
 // TODO: implement gaining more than one card
                     } else {
+                        UI.supply.title.textContent = "Supply"
                         UI.exit.removeAttribute('disabled')
                         UI.renderSupply()
                         UI.renderHandBar()
                         UI.renderHand()
+
                     }
                 }
             })
@@ -582,6 +584,7 @@ class Player {
             PHASE = 'buy';
             UI.renderHandBar()
             UI.renderTitle()
+            UI.renderHand()
             UI.exit.addEventListener('click', e => {this.cleanupPhase()}, {once: true});
             UI.exit.textContent = "DONE WITH BUY PHASE";
             UI.renderSupply()

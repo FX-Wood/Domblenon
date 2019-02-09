@@ -12,7 +12,7 @@ const PLAY = {
     festival: function(player) {
         player.actions += 2;
         player.buys++;
-        player.treasure++;
+        player.treasure += 2;
     },
     laboratory: function(player) {
         player.draw(2);
