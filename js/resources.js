@@ -26,11 +26,8 @@ const PLAY = {
     },
     moneylender: function(player) {
         console.log('PLAY.moneylender')
-        UI.trashSelector("Moneylender"
-            , 1 // n of cards to trash
-            , true // optional?
-            , function(card) { // only coppers may be trashed
-                
+        UI.trashSelector("Moneylender", 1, true
+            , function(card) {
                 if (card.name === "Copper") {
                     return true
                 } else {
@@ -42,6 +39,11 @@ const PLAY = {
                     PLAYERS[TURN].treasure += 3;
                 }
             }
+        )
+    },
+    remodel: function(player) {
+        trashSelector("Remodel", 1, false
+        , function
         )
     },
     smithy: function(player) {

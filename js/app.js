@@ -178,7 +178,7 @@ const UI = {
             UI.renderPlayed()
         }
     },
-    supplySelector: function(cardName, n, upToN, filter, result, player=PLAYERS[TURN]) {
+    gainSelector: function(cardName, n, upToN, filter, result, player=PLAYERS[TURN], where="discard") {
 
     },
     trashSelector: function(cardName, n, upToN, filter, result, player=PLAYERS[TURN], where="hand") {
