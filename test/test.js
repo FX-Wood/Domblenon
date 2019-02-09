@@ -1,7 +1,7 @@
 var assert = require('chai').assert
 
 
-var makeSupply = require('../js/lib.js').makeSupply
+var makeSupply = require('../js/resources.js').makeSupply
 
 describe('makeSupply()', function() {
     var supply = makeSupply(2);
@@ -12,4 +12,3 @@ describe('makeSupply()', function() {
         assert.hasAllKeys(supply, ["basic", "kingdom", "trash"], "does not have three keys")
     })
 })
-

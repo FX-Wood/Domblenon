@@ -1,11 +1,9 @@
-
 html, body {
     width: 100vw;
     height: 100vh;
     margin: 0;
     max-width: 100%;
 }
-
 /* Main grid setup */
 .app {
     margin: 1em;
@@ -18,7 +16,6 @@ html, body {
     "supply supply supply"
     "player player player"
 }
-
 .head {
     grid-area: head;
 }
@@ -31,12 +28,8 @@ html, body {
     grid-area: player;
 }
 /* End of main grid setup */
-
-
-.head__title {
-    display: inline-block;
-}
-.head__btn {
+/* Global classes */
+.card-bar__btn {
     float: right;
     padding: 1em;
 }
@@ -46,17 +39,26 @@ html, body {
     grid-template-rows: 20em;       /*  this sets the height of card windows*/
     overflow-x: scroll;
 }
-
-.card {
+.card__scroll:before,
+.card__scroll:after {
+    content: '';
+    width: 2em;
     display: inline-block;
-    padding: 1em;
-    border-radius: 2em;
+    grid-row: 1;
 }
-
+.card {
+    margin: 0 .5em;
+    grid-row: 1;
+    padding: 1em;
+    border-radius: 1em;
+    background-color: rgba(0, 0, 0, 0.158);
+}
 .card__img {
     max-height: 18em;
 }
-
+.head__title {
+    display: inline-block;
+}
 /* supply area */
 
 .title--supply {
@@ -95,16 +97,13 @@ html, body {
 .card__bar--hand > * {
     display: inline-block;
 }
-.card-bar__btn {
-    float: right;
-    padding: 1em;
-}
 .card-bar__title--hand {
     grid-row: 1;
     padding: 1em;
     border-radius: 1em;
     background-color: rgba(46, 255, 27, 0.3);
 }
+
 .card--hand {
     margin: 0 .5em;
     grid-row: 1;
@@ -127,6 +126,9 @@ html, body {
 }
 .left {
     margin-right: 1em;
+}
+.right {
+    overflow: auto;
 }
 
 .title--deck {
@@ -180,15 +182,14 @@ html, body {
 .active--trash > img {
     box-shadow: 0 0 .5em .5em rgba(255, 0, 0, .6);
 }
-.active--trash:hover > img {
+.active--trash > img:hover {
     box-shadow: 0 0 .5em .5em rgba(255, 0, 0, 1);
 }
-
 .active--buy > img {
     box-shadow: 0 0 .5em .5em rgba(71, 221, 11, 0.6);
 }
 
-.active--buy:hover > img {
+.active--buy > img:hover {
     box-shadow: 0 0 .5em .5em rgba(71, 221, 11, 1);
 }
 
@@ -196,6 +197,14 @@ html, body {
     box-shadow: 0 0 .5em .5em rgba(0, 174, 255, 0.4);
 }
 
-.active--action:hover > img {
+.active--action > img:hover {
     box-shadow: 0 0 .5em .5em rgba(0, 174, 255, 1);
+}
+
+.active--treasure {
+    box-shadow: 0 0 .5em .5em rgba(255, 238, 0, 0.6);
+}
+
+.active--treasure > img:hover {
+    box-shadow: 0 0 .5em .5em rgba(255, 238, 0, 1);
 }
