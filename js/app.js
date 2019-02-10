@@ -594,6 +594,9 @@ class Player {
             UI.renderHandBar()
         }
     }
+    handSelect(cardName, filter, result, style) {
+        renderHand()
+    },
     cleanupPhase() {
         UI.renderHandBar()
         console.log(`Cleaning up ${this.name}'s turn`)
