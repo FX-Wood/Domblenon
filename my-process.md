@@ -111,3 +111,28 @@ EOD update:
 
 Started to look at throne room, got very tired all of a sudden. 
 Went to bed immediately!
+
+## Day 7
+I didn't get around to writing a test yesterday, so I wrote one this morning. It tests the CARDS resource, which is an object that holds all the arguments for constructing cards. Now if I don't enter a card correctly the test should catch it!
+
+Next up: make sure all of my project requirement ducks are in a row:
+- [x] Display a game in the browser
+- [x] Switch turns between two players, or switch turns between a player and the computer (AI)*
+- [ ] Design logic for winning & visually display which player won
+  - [x] Game detects winning and endgame state
+  - [ ] Game displays wins for users
+- [x] Include separate HTML / CSS / JavaScript files
+- [ ] Stick with KISS (Keep It Simple Stupid) and DRY (Don't Repeat Yourself) principles
+- [x] Use Javascript or jQuery for DOM manipulation
+- [x] Deploy your game online, where the rest of the world can access it**
+- [x] Use semantic markup for HTML and CSS (adhere to best practices)
+  - [x] Using <main> for body of app
+  - [x] Using <header> for title bar and hand bar
+  - [x] Using <section> for supply, player area, discard, and trash
+
+Looks pretty good except for the endgame state. Currently the endgame is relayed to users in an alert box (blechh). I need to make a screen for the endgame that is pleasant to interact with.
+#### Day 7 todos:
+- [ ] make endgame screen
+- [ ] make presentation
+  - [ ] make an example gamestate that can be invoked during the presentation
+- [ ] craft README.md
