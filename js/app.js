@@ -196,27 +196,26 @@ const UI = {
             UI.renderSupply();
         }
     },
-    handSelector: function(message, style, n, cancelable, filter, result, player=PLAYERS[TURN]) {
-        UI.exit.setAttribute('disabled', 'disabled')
-        UI.handBar.title.textContent = "Hand: " + message
-        UI.renderHand()
-    }, 
-    gainSelector: function(n, cancelable, message, filter, result, player=PLAYERS[TURN]) {
+    gainSelector: function(n, cancelable, message, filter, result, player=PLAYERS[TURN], where="discard") {
         console.log('starting gain selection')
         if (typeof filter === 'undefined') {filter = function(card) {return true}};
         setTimeout(function() {
             UI.exit.setAttribute('disabled', 'disabled')
             UI.handBar.title.textContent = "Cards in Hand: " + message;
 // TODO: implement check to see if possible
-            console.log(player)
             UI.renderSupply("active--buy", filter, e => {
                 console.log(player)
-                console.log(this)
-                let success = player.gain(e.target.id)
-
+                let success;
+                if (where === "discard") {
+                    success = player.gain(e.target.id);
+                } else if (where === "hand") {
+                    success = player.gainToHand(e.target.id);
+                } 
+                console.log('success', success)
                 if (success) {
                     UI.renderDiscard()
                     UI.discard.scrollIntoView({behavior: "smooth", block: "end", inline: "start"});
+                    result(success)
                     n--
                     if (n > 0) {
 // TODO: implement gaining more than one card
@@ -458,17 +457,30 @@ class Player {
             UI.renderDiscard()
         }
     }
-    gain(cardName) {
-        console.log(`gaining ${cardName}`);
+    gainToHand(cardName) {
+        cardName = cardName.replace(' ', '')
+        console.log(`gaining ${cardName} to hand`);
             let type = SUPPLY.basic[cardName]? "basic" : "kingdom";
             if (SUPPLY[type][cardName]) {                                       // if there is one left
                 SUPPLY[type][cardName]--;                                       // remove it from the supply
-                this.discard.unshift(new Card(...(CARDS[cardName])));              // add it to current player's discard pile
+                this.hand.unshift(new Card(...(CARDS[cardName.replace(' ', '')])));              // add it to current player's discard pile
                 return true;
             }
         console.log(`no ${cardName} in supply`)
         return false;
-        }
+    }
+    gain(cardName) {
+        cardName = cardName.replace(' ', '')
+        console.log(`gaining ${cardName}`);
+            let type = SUPPLY.basic[cardName]? "basic" : "kingdom";
+            if (SUPPLY[type][cardName]) {                                       // if there is one left
+                SUPPLY[type][cardName]--;                                       // remove it from the supply
+                this.discard.unshift(new Card(...(CARDS[cardName.replace(' ', '')])));              // add it to current player's discard pile
+                return true;
+            }
+        console.log(`no ${cardName} in supply`)
+        return false;
+    }
     autoPlayTreasures() {
         console.log('autoplaying treasure');
         let player = PLAYERS[TURN];
@@ -491,9 +503,9 @@ class Player {
         }
     }
     buy(cardName) {
-        let card = new Card(...(CARDS[cardName]));
+        let card = new Card(...(CARDS[cardName.replace(' ', '')]));
         if (PHASE === 'buy') {
-            if (SUPPLY.basic[cardName] || SUPPLY.kingdom[cardName]) {
+            if (SUPPLY.basic[cardName] || SUPPLY.kingdom[cardName.replace(' ', '')]) {
                 if (this.buys > 0) {  // if you have enough treasure and enough buys:
                     if (this.treasure >= card.cost) {
                         if (this.gain(cardName)) {
