@@ -5,6 +5,35 @@ const PLAY = {
     victory: function(player) {
         // do nothing
     },
+    artisan: function() {
+        UI.gainSelector(1, false 
+            , 'gain one card costing up to 5 (Artisan)'
+            , function artisanSupplyFilter(card) {
+                if (card.cost <= 5) {
+                    return true;
+                } else {
+                    return false
+                }
+            }
+            , function(gainSuccess) {
+                if (gainSuccess) {
+                    UI.handSelector(
+                        'Put one card on top of your deck (Artisan)' // message
+                        , 1, false  // number, optional = false
+                        , function artisanHandFilter(card) {
+                            return true;
+                        }
+                        , function artisanHandSelectionSuccess(selection) {
+                            player.deck.push(selection)
+                        }
+
+
+                    )
+
+                }
+            }
+        )
+    },
     chapel: function(player) {
         // trash up to 4 cards
         UI.trashSelector("Chapel", 4, true) // upToN bool is true
@@ -94,6 +123,7 @@ const CARDS = {
     Province: ["Province", 8, true, "img/base/province.jpg", "Victory", 0, 8, PLAY.victory],
     Curse: ["Curse", 0, true, "img/base/curse.jpg", "Victory", 0, -1, PLAY.victory],
 
+    Artisan: ["Artisan", 5, true, "img/original/artisan.jpg", "Action", 0, 0, PLAY.artisan],
     Chapel: ["Chapel", 2, true, "img/original/chapel.jpg", "Action", 0, 0, PLAY.chapel],
     Festival: ["Festival", 5, true, "img/original/festival.jpg", "Action", 0, 0, PLAY.festival],
     Gardens: ["Gardens", 4, true, "img/original/gardens.jpg", "Victory", 0, 0, PLAY.kingdom],
@@ -107,8 +137,6 @@ const CARDS = {
     Empty: ["Empty", null, false, "img/stack-empty0.jpg", null, null, null, null],
     CardBack: ["CardBack", null, false, "img/card-back.jpg", null, null, null, null]
 }
-
-
 
 function makeSupply(n) {
 

@@ -196,7 +196,11 @@ const UI = {
             UI.renderSupply();
         }
     },
-
+    handSelector: function(message, style, n, cancelable, filter, result, player=PLAYERS[TURN]) {
+        UI.exit.setAttribute('disabled', 'disabled')
+        UI.handBar.title.textContent = "Hand: " + message
+        UI.renderHand()
+    }, 
     gainSelector: function(n, cancelable, message, filter, result, player=PLAYERS[TURN]) {
         console.log('starting gain selection')
         if (typeof filter === 'undefined') {filter = function(card) {return true}};
@@ -204,8 +208,13 @@ const UI = {
             UI.exit.setAttribute('disabled', 'disabled')
             UI.handBar.title.textContent = "Cards in Hand: " + message;
 // TODO: implement check to see if possible
+            console.log(player)
             UI.renderSupply("active--buy", filter, e => {
-                if (player.gain(e.target.id)) {
+                console.log(player)
+                console.log(this)
+                let success = player.gain(e.target.id)
+
+                if (success) {
                     UI.renderDiscard()
                     UI.discard.scrollIntoView({behavior: "smooth", block: "end", inline: "start"});
                     n--
@@ -594,9 +603,7 @@ class Player {
             UI.renderHandBar()
         }
     }
-    handSelect(cardName, filter, result, style) {
-        renderHand()
-    },
+
     cleanupPhase() {
         UI.renderHandBar()
         console.log(`Cleaning up ${this.name}'s turn`)
