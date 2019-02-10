@@ -102,3 +102,10 @@ Tomorrow I will double-check requirements and start work on the presentation for
 
 UI feature idea: Make stack counters for supply that have a numerical indicator as well as a percentage indicator (like a clock type thing for example)
 Maybe also make this toggleable from the supply bar
+
+EOD update:
+- [x] Artisan
+- [x] Workshop
+- [x] Mine
+- [x] Council room
+Started to look at throne room, got very tired all of a sudden. Went to bed immediately!
