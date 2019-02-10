@@ -509,9 +509,9 @@ class Player {
                 if (this.buys > 0) {  // if you have enough treasure and enough buys:
                     if (this.treasure >= card.cost) {
                         if (this.gain(cardName)) {
-                            console.log(`you purchased ${cardName} and have ${this.treasure} treasure and ${this.buys} buys remaining`)
                             this.treasure -= card.cost;                     // pay the cost of the card
                             this.buys--;                                    // decrement the number of buys you have
+                            console.log(`you purchased ${cardName} and have ${this.treasure} treasure and ${this.buys} buys remaining`)
                             ;                            // gain the card
                             return true
                         } else {
