@@ -214,7 +214,7 @@ function makeSupply(n) {
                 trash: []
             }
             for (let card in CARDS) {
-                if (card !== "Copper" && card!== "Silver" && card !== "Gold" && card !== "Estate")
+                if (card !== "Copper" && card!== "Silver" && card !== "Gold" && card !== "Estate" && card !== "Duchy" && card !== "Province" && card !== "Curse" && card !== "Empty" && card !== "CardBack")
                 supply.kingdom[card] = 10
             }
             //console.log('making supply', supply)
