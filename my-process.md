@@ -108,4 +108,6 @@ EOD update:
 - [x] Workshop
 - [x] Mine
 - [x] Council room
-Started to look at throne room, got very tired all of a sudden. Went to bed immediately!
+
+Started to look at throne room, got very tired all of a sudden. 
+Went to bed immediately!
