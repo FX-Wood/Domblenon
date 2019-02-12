@@ -742,7 +742,7 @@ function scoreGame() {
     splash.appendChild(exit)
     
     let img = document.createElement('img')
-    img.src = 'victory.jpg';
+    img.src = 'img/victory.jpg';
     img.style.margin = '0 auto';
     img.style.display = 'block';
 
