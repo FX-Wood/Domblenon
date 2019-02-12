@@ -174,6 +174,9 @@ document.addEventListener('DOMContentLoaded', e => {
 
     dom.addPlayerBtn.addEventListener('click', newPlayer)
     newPlayer();
+    document.getElementById('play-btn').addEventListener('click', startGame);
+
+
 })
 
 function updateName(e) {
@@ -324,11 +327,17 @@ function selectKingdom() {
 
 function startGame() {
     if (kingdomChoices) {
+        console.log('your kingdom', kingdomChoices)
         if (players) {
-            if (window.localStorage.players)
-                if (window.localStorage.kingdomChoices) {
-                    window.location.href = 'game.html';
+            console.log('your players', players)
+            if (window.localStorage.players) {
+                console.log('found players in local storage')
+                if (window.localStorage.kingdom) {
+                    console.log('found kingdom in local storage')
+                    console.log('starting game!')
+                    window.open('game.html');
                 }
+            }
         }
     }
 }

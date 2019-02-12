@@ -1,7 +1,7 @@
 // GLOBALS
-const NUM_PLAYERS = 2 //parseInt(prompt("How many players?"));
-const PLAYERS = [];
-const SUPPLY = makeSupply(NUM_PLAYERS);
+var PLAYERS;
+var NUM_PLAYERS;
+var SUPPLY;
 var TURN = 0;
 var PHASE = null;
 var DONE = false;
@@ -302,36 +302,46 @@ const UI = {
     }
 }
 document.addEventListener('DOMContentLoaded', function init() {
-        UI.box = document.getElementById('app');
-        UI.title = document.getElementById('title');
-        UI.headBtn = document.getElementById('scroll-down')
-        UI.exit =  document.getElementById('exit');
+    PLAYERS = JSON.parse(window.localStorage.getItem('players')).map(player =>{ 
+        return new Player(...player)
+    })
+    NUM_PLAYERS = PLAYERS.length;
+    SUPPLY = makeSupply(NUM_PLAYERS)
+    
+    console.log(`NUM_PLAYERS: ${NUM_PLAYERS}`);
+    console.log(`PLAYERS: ${PLAYERS.map(player => {return 'player 0: ' + player.name})}`);
+    console.log(`SUPPLY: ${Object.keys(SUPPLY).reduce((acc, key) => {return acc.concat(Object.entries(SUPPLY[key]).map(entry => entry.reduce((acc, next)=> {return next + ' ' + acc})))}, [])}`)
 
-        UI.supply = document.getElementById('supply');
-        UI.basicSupply = document.getElementById('supply-basic');
-        UI.kingdomSupply = document.getElementById('supply-kingdom');
-        UI.supplyBar = {
-            title: document.getElementById('supply-title')
-        }
+    UI.box = document.getElementById('app');
+    UI.title = document.getElementById('title');
+    UI.headBtn = document.getElementById('scroll-down')
+    UI.exit =  document.getElementById('exit');
 
-        UI.hand = document.getElementById('hand');
-        UI.handBar = {
-            container: document.getElementById('hand-bar'),
-            title: document.getElementById('hand-title'),
-            funcBtn: document.getElementById('hand-funcBtn'),
-            scrollBtn: document.getElementById('hand-scrollBtn')
-        }
-        UI.played = document.getElementById('played');
+    UI.supply = document.getElementById('supply');
+    UI.basicSupply = document.getElementById('supply-basic');
+    UI.kingdomSupply = document.getElementById('supply-kingdom');
+    UI.supplyBar = {
+        title: document.getElementById('supply-title')
+    }
 
-        UI.deckTitle = document.getElementById('deck-title')
-        UI.deck = document.getElementById('deck');
+    UI.hand = document.getElementById('hand');
+    UI.handBar = {
+        container: document.getElementById('hand-bar'),
+        title: document.getElementById('hand-title'),
+        funcBtn: document.getElementById('hand-funcBtn'),
+        scrollBtn: document.getElementById('hand-scrollBtn')
+    }
+    UI.played = document.getElementById('played');
 
-        UI.discard = document.getElementById('discard');
-        UI.trash = document.getElementById('trash')
+    UI.deckTitle = document.getElementById('deck-title')
+    UI.deck = document.getElementById('deck');
+
+    UI.discard = document.getElementById('discard');
+    UI.trash = document.getElementById('trash')
+    
     PLAYERS.forEach(player => {
         // player.name = prompt(`Player ${player.index}, what is your name?`)
-        PLAYERS[0].name = "ME";
-        PLAYERS[1].name = "ME2";
+
         player.makeStartingDeck();
         player.draw(5)
     })
@@ -363,8 +373,8 @@ function gShuffle(cardsArr, nameStr) {
 }
 
 class Player {
-    constructor(index) {
-        this.name;
+    constructor(index, name) {
+        this.name = name;
         this.index = index;
         this.turnState = null;
         this.deck = [];
@@ -617,15 +627,6 @@ class Player {
     }
 }
 
-
-console.log(`NUM_PLAYERS: ${NUM_PLAYERS}`);
-console.log(`PLAYERS: ${PLAYERS.map(player => {return 'player 0: ' + player.name})}`);
-console.log(`SUPPLY: ${Object.keys(SUPPLY).reduce((acc, key) => {return acc.concat(Object.entries(SUPPLY[key]).map(entry => entry.reduce((acc, next)=> {return next + ' ' + acc})))}, [])}`)
-for (let i = 0; i < NUM_PLAYERS; i++) {
-    PLAYERS.push(new Player(i));
-}
-
-
 function gameOver() {
     let count = 2;
     for (let type in SUPPLY) {
@@ -682,34 +683,6 @@ function scoreGame() {
     alert('the player with the highest score was: ' + highest.name + ' with a score of ' + highest.score + '. Congratulations! Good game, and thank you for playing.')
     return highest
 };
-var me1 = PLAYERS[0];
-var me2 = PLAYERS[1];
-var s = SUPPLY
-
-// // 2 players  8 victory, 10 curse 
-// // 3 players  12 victory, 20 curse
-// // 4 players  12 victory, 30 curse
-// // 5 players  15 Provinces, 40 curse, 4 supply piles
-// // 6 players  18 Provinces, 50 curse, 4 supply piles
-
-
-// // Copper (2 players): 46 (optionally 106)
-// // Copper (3 players): 39 (optionally 99)
-// // Copper (4 players): 32 (optionally 92)
-// // Copper (5 players): 85
-// // Copper (6 players): 78
-// // Silver (2-4 players): 40 (optionally 80)
-// // Silver (5-6 players): 80
-// // Gold (2-4 players): 30 (optionally 60)
-// // Gold (5-6 players): 60
-// // Potion (if used): 16
-// // Platinum (if used): 12
-// // Kingdom cards used (Non-victory): 10
-// // Kingdom cards used (Victory, 2 players): 8
-// // Kingdom cards used (Victory, 3-6 players): 12
-// // Diadem: 0 in Supply, 1 not in Supply
-// // Spoils: 0 in Supply, 15 not in Supply
-// // https://boardgamegeek.com/thread/867734/how-many-treasure-cards-supply
 
 // default filter for cards
 function defaultHandFilter(card) {

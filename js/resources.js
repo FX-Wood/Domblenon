@@ -206,6 +206,7 @@ const CARDS = {
 }
 
 function makeSupply(n) {
+    let kingdomCardsFromUser = JSON.parse(window.localStorage.kingdom)
     switch(n) {
         case 2:
             let supply = {
@@ -213,17 +214,42 @@ function makeSupply(n) {
                 kingdom: {},
                 trash: []
             }
-            for (let card in CARDS) {
-                if (card !== "Copper" && card!== "Silver" && card !== "Gold" && card !== "Estate" && card !== "Duchy" && card !== "Province" && card !== "Curse" && card !== "Empty" && card !== "CardBack")
-                supply.kingdom[card] = 10
-            }
-            //console.log('making supply', supply)
+            kingdomCardsFromUser.forEach(selection => {
+                console.log(selection)
+                return supply.kingdom[selection] = 10;
+            })
+
             return supply;
         case 3:
             alert('3-player support coming soon. Try 2 players.')
             break;
     }
 }
+
+// // 2 players  8 victory, 10 curse 
+// // 3 players  12 victory, 20 curse
+// // 4 players  12 victory, 30 curse
+// // 5 players  15 Provinces, 40 curse, 4 supply piles
+// // 6 players  18 Provinces, 50 curse, 4 supply piles
+
+
+// // Copper (2 players): 46 (optionally 106)
+// // Copper (3 players): 39 (optionally 99)
+// // Copper (4 players): 32 (optionally 92)
+// // Copper (5 players): 85
+// // Copper (6 players): 78
+// // Silver (2-4 players): 40 (optionally 80)
+// // Silver (5-6 players): 80
+// // Gold (2-4 players): 30 (optionally 60)
+// // Gold (5-6 players): 60
+// // Potion (if used): 16
+// // Platinum (if used): 12
+// // Kingdom cards used (Non-victory): 10
+// // Kingdom cards used (Victory, 2 players): 8
+// // Kingdom cards used (Victory, 3-6 players): 12
+// // Diadem: 0 in Supply, 1 not in Supply
+// // Spoils: 0 in Supply, 15 not in Supply
+// // https://boardgamegeek.com/thread/867734/how-many-treasure-cards-supply
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
     exports.PLAY = PLAY;
