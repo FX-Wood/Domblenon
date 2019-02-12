@@ -339,42 +339,6 @@ document.addEventListener('DOMContentLoaded', function init() {
     PLAYERS[TURN].startTurn()
 })
 
-// class for cards
-class Card {
-    constructor(name, cost, buyable, imageUrl, type, treasureVal, victoryVal, playMethod) {
-        this.name = name;
-        this.cost = cost;
-        this.buyable = buyable;
-        this.imageUrl = imageUrl;
-        this.type = type;
-        this.treasureVal = treasureVal;
-        this.victoryVal = victoryVal
-        this.play = playMethod;
-        this.ui;
-        this.uiState;
-    }
-
-    render(hook, id, state) {
-
-        // make a wrapper div
-        let wrap = document.createElement('div');
-        wrap.className = !state ? "card" : `card--${state}`;
-        hook.appendChild(wrap);
-        // make a card image
-        let img = document.createElement('img');
-        img.className = "card__img";
-        img.id = id;
-        img.src = this.imageUrl;
-        img.alt = this.name
-        // add information about card to itself
-        this.ui = wrap;
-        this.uiState = state;
-        // append image to page
-        wrap.appendChild(img);
-        return wrap;
-    }
-}
-
 // makes 0 to n cards, takes n and an array of arguments for the card constructor
 function makeCards(n, card) {
     console.log(`makeCards(${n}, ${card[0]})`);
