@@ -14,7 +14,7 @@ Navigate to the hosted version at: https://fx-wood.github.io/DombleHost/
 To read about the making of this project, please see [my-process](https://github.com/FX-Wood/DombleHost/blob/master/my-process.md)
 
 ## Issues/bugs
-Please submit any issues to the original repo:
+Please submit any issues or bugs you find!
 
 
 
