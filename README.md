@@ -7,7 +7,8 @@ Navigate to the hosted version at: https://fx-wood.github.io/DombleHost/
   + add one more player
   + give both names
   + create a supply balance in "kingdom selection" (not yet fully supported)
-  + click the crown in "kingdom selection
+  + click the crown to generate a kingdom
+  + click the other crown to start!
 
 ## 
 To read about the making of this project, please see https://github.com/FX-Wood/DombleHost/blob/master/my-process.md
