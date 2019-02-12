@@ -618,7 +618,43 @@ class Player {
     startTurn() {
         UI.renderHandBar()
         console.log(`starting ${this.name}'s turn`);
-        alert('it\'s your turn ' + this.name )
+        
+        let splash = document.createElement('div')
+        splash.style.width = '100vw';
+        splash.style.height = '100vh';
+        splash.style.zIndex = 1000;
+        splash.style.backgroundColor = 'white';
+        splash.style.position = 'fixed'
+        splash.style.top = 0;
+        splash.style.left = 0;
+        document.body.appendChild(splash);
+
+        
+        let heading = document.createElement('h1');
+        heading.textContent = 'it\'s your turn ' + this.name + ", Switch!";
+        heading.className = 'card-bar__title--supply';
+        splash.appendChild(heading)
+        
+        let exit = document.createElement('button');
+        exit.className = 'card-bar__btn';
+        exit.style.position = 'fixed';
+        exit.style.right = '4em';
+        exit.style.top = '5em';
+        exit.textContent = "DONE SWITCHING";
+        
+        splash.appendChild(exit)
+        
+        let img = document.createElement('img')
+        img.src = 'img/stack-empty0.jpg';
+        img.style.margin = '0 auto';
+        img.style.display = 'block';
+
+        splash.appendChild(img);
+
+        exit.addEventListener('click', e => {
+            e.target.parentElement.parentElement.removeChild(e.target.parentElement);
+        })
+        
         this.buys = 1;          // reset buys
         this.actions = 1;       // reset actions
         this.actionPhase()
@@ -680,7 +716,41 @@ function scoreGame() {
             highest.score = score;
         };
     });
-    alert('the player with the highest score was: ' + highest.name + ' with a score of ' + highest.score + '. Congratulations! Good game, and thank you for playing.')
+    let splash = document.createElement('div')
+    splash.style.width = '100vw';
+    splash.style.height = '100vh';
+    splash.style.zIndex = 1000;
+    splash.style.backgroundColor = 'white';
+    splash.style.position = 'fixed'
+    splash.style.top = 0;
+    splash.style.left = 0;
+    document.body.appendChild(splash);
+
+    
+    let heading = document.createElement('h1');
+    heading.textContent = 'the player with the highest score was: ' + highest.name + ' with a score of ' + highest.score + '. Congratulations! Good game, and thank you for playing.';
+    heading.className = 'card-bar__title--supply';
+    splash.appendChild(heading)
+    
+    let exit = document.createElement('button');
+    exit.className = 'card-bar__btn';
+    exit.style.position = 'fixed';
+    exit.style.right = '4em';
+    exit.style.top = '5em';
+    exit.textContent = "DONE PLAYING";
+    
+    splash.appendChild(exit)
+    
+    let img = document.createElement('img')
+    img.src = 'victory.jpg';
+    img.style.margin = '0 auto';
+    img.style.display = 'block';
+
+    splash.appendChild(img);
+
+    exit.addEventListener('click', e => {
+        window.close();
+    })
     return highest
 };
 
